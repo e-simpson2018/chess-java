@@ -24,14 +24,16 @@ public abstract class Piece
 	
 	private Colour colour;
 	protected String pieceType;
+	protected int pieceId;
 	//added for the gui - in constructor too
-	protected Location setUpLocation;
+	protected Location setUpLocation;	
+	
 
 	
-	public Piece(Location newSetUpLoc, Colour newColour)
+	public Piece(Colour newColour)
 	{
 		colour = newColour;
-		setUpLocation = newSetUpLoc;
+		//setUpLocation = newSetUpLoc;
 	}
 	
 	//IS THIS THE RIGHT GETTER FOR AN EMUN??
@@ -58,6 +60,11 @@ public abstract class Piece
 	public String getPieceType()
 	{
 		return pieceType;
+	}
+	
+	public int getPieceId()
+	{
+		return pieceId;
 	}
 	
 	//TODO CHECK IF THERE IS A STRATEGY TO NOT PASS CHESSBOARD HERE BECAUSE PAWN IS THE ONLY ONE THAT NEEDS IT

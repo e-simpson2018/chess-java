@@ -3,10 +3,15 @@ package chessGame;
 public class Queen extends Piece
 {
 	
-	public Queen(Location newSetUpLoc, Colour newColour) 
+	public Queen(Colour newColour) 
 	{
-		super(newSetUpLoc, newColour);
+		super(newColour);
 		super.pieceType = "queen";
+		
+		if (newColour ==  Piece.Colour.WHITE)		
+			super.pieceId = 10;		
+		else		
+			super.pieceId = 9;
 	}
 	
 	@Override

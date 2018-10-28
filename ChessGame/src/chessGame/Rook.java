@@ -2,11 +2,17 @@ package chessGame;
 
 public class Rook extends Piece
 {	
-	public Rook(Location newSetUpLoc, Colour newColour) 
+	public Rook(Colour newColour) 
 	{
-		super(newSetUpLoc, newColour);
+		super(newColour);
 		super.pieceType = "rook";
-	}
+		
+		if (newColour ==  Piece.Colour.WHITE)		
+			super.pieceId = 12;		
+		else		
+			super.pieceId = 11;
+	}	
+	
 	
 
 	@Override

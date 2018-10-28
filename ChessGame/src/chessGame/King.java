@@ -2,10 +2,21 @@ package chessGame;
 
 public class King extends Piece
 {	
-	public King(Location newSetUpLoc, Colour newColour) 
+	/*public King(Location newSetUpLoc, Colour newColour) 
 	{
 		super(newSetUpLoc, newColour);
 		super.pieceType = "king";
+	}*/
+	
+	public King(Colour newColour) 
+	{
+		super(newColour);
+		super.pieceType = "king";
+		
+		if (newColour ==  Piece.Colour.WHITE)		
+			super.pieceId = 4;		
+		else		
+			super.pieceId = 3;
 	}
 
 	//TODO CHECK ALL THE OVERRIDES THAT THYE ARE, IN FACT OVERRIDES

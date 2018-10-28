@@ -2,10 +2,21 @@ package chessGame;
 
 public class Bishop extends Piece
 {	
-	public Bishop(Location newSetUpLoc, Colour newColour) 
+	/*public Bishop(Location newSetUpLoc, Colour newColour) 
 	{
 		super(newSetUpLoc, newColour);
 		super.pieceType = "rook";
+	}*/
+	
+	public Bishop(Colour newColour) 
+	{
+		super(newColour);
+		super.pieceType = "bishop";
+		
+		if (newColour ==  Piece.Colour.WHITE)		
+			super.pieceId = 2;		
+		else		
+			super.pieceId = 1;
 	}
 	
 
@@ -24,7 +35,7 @@ public class Bishop extends Piece
 	public String toString() 
 	{ 
 		//TODO UPDATE
-	    return super.getColour() + "R ";
+	    return super.getColour() + "B ";
 	} 
 }
 

@@ -2,10 +2,21 @@ package chessGame;
 
 public class Knight extends Piece
 {	
-	public Knight(Location newSetUpLoc, Colour newColour) 
+	/*public Knight(Location newSetUpLoc, Colour newColour) 
 	{
 		super(newSetUpLoc, newColour);
 		super.pieceType = "knight";
+	}*/
+	
+	public Knight(Colour newColour) 
+	{
+		super(newColour);
+		super.pieceType = "knight";
+		
+		if (newColour ==  Piece.Colour.WHITE)		
+			super.pieceId = 6;		
+		else		
+			super.pieceId = 5;
 	}
 	
 	

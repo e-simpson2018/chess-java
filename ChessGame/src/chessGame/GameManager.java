@@ -3,61 +3,83 @@ package chessGame;
 import java.util.Scanner;
 
 public class GameManager 
-{
-	//TODO MAKE THESE ALL PRIVATE????
+{	
 	//Create all the board pieces
-	static Rook w1R = new Rook(Piece.Colour.WHITE);
-	static Rook w2R = new Rook(Piece.Colour.WHITE);
-	static Rook b1R = new Rook(Piece.Colour.BLACK);
-	static Rook b2R = new Rook(Piece.Colour.BLACK);
-	static Knight w1N = new Knight(Piece.Colour.WHITE);
-	static Knight w2N = new Knight(Piece.Colour.WHITE);
-	static Knight b1N = new Knight(Piece.Colour.BLACK);
-	static Knight b2N = new Knight(Piece.Colour.BLACK);
-	//Bishop bishop1W = new Bishop(Piece.Colour.WHITE);
-	//Bishop bishop2W = new Bishop(Piece.Colour.WHITE);
-	//Bishop bishop1B = new Bishop(Piece.Colour.BLACK);
-	//Bishop bishop2B = new Bishop(Piece.Colour.BLACK);
-	static Queen wQ = new Queen(Piece.Colour.WHITE);
-	static Queen bQ = new Queen(Piece.Colour.BLACK);
-	static King wK = new King(Piece.Colour.WHITE);
-	static King bK = new King(Piece.Colour.BLACK);
-	static Pawn w1P = new Pawn(Piece.Colour.WHITE);
-	static Pawn w2P = new Pawn(Piece.Colour.WHITE);
-	static Pawn w3P = new Pawn(Piece.Colour.WHITE);
-	static Pawn w4P = new Pawn(Piece.Colour.WHITE);
-	static Pawn w5P = new Pawn(Piece.Colour.WHITE);
-	static Pawn w6P = new Pawn(Piece.Colour.WHITE);
-	static Pawn w7P = new Pawn(Piece.Colour.WHITE);
-	static Pawn w8P = new Pawn(Piece.Colour.WHITE);
-	static Pawn b1P = new Pawn(Piece.Colour.BLACK);
-	static Pawn b2P = new Pawn(Piece.Colour.BLACK);
-	static Pawn b3P = new Pawn(Piece.Colour.BLACK);
-	static Pawn b4P = new Pawn(Piece.Colour.BLACK);
-	static Pawn b5P = new Pawn(Piece.Colour.BLACK);
-	static Pawn b6P = new Pawn(Piece.Colour.BLACK);
-	static Pawn b7P = new Pawn(Piece.Colour.BLACK);
-	static Pawn b8P = new Pawn(Piece.Colour.BLACK);
-
+	private Rook w1R = new Rook(Piece.Colour.WHITE);
+	private Rook w2R = new Rook(Piece.Colour.WHITE);
+	private Rook b1R = new Rook(Piece.Colour.BLACK);
+	private Rook b2R = new Rook(Piece.Colour.BLACK);
+	private Knight w1N = new Knight(Piece.Colour.WHITE);
+	private Knight w2N = new Knight(Piece.Colour.WHITE);
+	private Knight b1N = new Knight(Piece.Colour.BLACK);
+	private Knight b2N = new Knight(Piece.Colour.BLACK);
+	private Bishop wb1 = new Bishop(Piece.Colour.WHITE);
+	private Bishop wb2 = new Bishop(Piece.Colour.WHITE);
+	private Bishop bb1 = new Bishop(Piece.Colour.BLACK);
+	private Bishop bb2 = new Bishop(Piece.Colour.BLACK);
+	private Queen wQ = new Queen(Piece.Colour.WHITE);
+	private Queen bQ = new Queen(Piece.Colour.BLACK);
+	private King wK = new King(Piece.Colour.WHITE);
+	private King bK = new King(Piece.Colour.BLACK);
+	private Pawn w1P = new Pawn(Piece.Colour.WHITE);
+	private Pawn w2P = new Pawn(Piece.Colour.WHITE);
+	private Pawn w3P = new Pawn(Piece.Colour.WHITE);
+	private Pawn w4P = new Pawn(Piece.Colour.WHITE);
+	private Pawn w5P = new Pawn(Piece.Colour.WHITE);
+	private Pawn w6P = new Pawn(Piece.Colour.WHITE);
+	private Pawn w7P = new Pawn(Piece.Colour.WHITE);
+	private Pawn w8P = new Pawn(Piece.Colour.WHITE);
+	private Pawn b1P = new Pawn(Piece.Colour.BLACK);
+	private Pawn b2P = new Pawn(Piece.Colour.BLACK);
+	private Pawn b3P = new Pawn(Piece.Colour.BLACK);
+	private Pawn b4P = new Pawn(Piece.Colour.BLACK);
+	private Pawn b5P = new Pawn(Piece.Colour.BLACK);
+	private Pawn b6P = new Pawn(Piece.Colour.BLACK);
+	private Pawn b7P = new Pawn(Piece.Colour.BLACK);
+	private Pawn b8P = new Pawn(Piece.Colour.BLACK);
 	
-	static String player = "white";
-	static Scanner input = new Scanner(System.in);
+	private String player = "white";
+	private Scanner input = new Scanner(System.in);
 	
-	public static void main(String[] args) 
+	private ChessBoard cb;
+	private GameGUI gameGui = new GameGUI();
+	
+	
+	
+	public void initGame() 
 	{
 		//Create a new board passing in all pieces
-		ChessBoard cb = new ChessBoard(wQ, bQ, wK, bK, w1R, w2R, b1R, b2R, w1N, w2N, b1N, b2N, w1P, w2P, w3P, w4P, w5P, w6P, w7P, w8P,
+		cb = new ChessBoard(wQ, bQ, wK, bK, w1R, w2R, b1R, b2R, wb1, wb2, bb1, bb2, w1N, w2N, b1N, b2N, w1P, w2P, w3P, w4P, w5P, w6P, w7P, w8P,
 										b1P, b2P, b3P, b4P, b5P, b6P, b7P, b8P);
-		cb.displayBoard();
+		cb.displayBoardConsole();
 		
+		// start gui and dispaly the status of the board
+		gameGui.startGui();
+		gameGui.UpdateBoardImages(cb.getBoardStatus());
+	}
+			
+	
+	
+	public void StartGame()
+	{
 		do 
 		{
-			takeATurn(cb);
-			cb.displayBoard();
+			takeATurn();
+			cb.displayBoardConsole();
+			updateGameGui();
 		}while(!checkForCheckMate());
 	}
+	
+	
+	
+	public void updateGameGui()
+	{
+		gameGui.UpdateBoardImages(cb.getBoardStatus());
+	}
+	
+	
 		
-	public static boolean takeATurn(ChessBoard cb)
+	public boolean takeATurn()
 	{	
 		Piece pieceToMove;
 		boolean validPieceMovement = false;
@@ -133,29 +155,29 @@ public class GameManager
 			if(player == "white" && pieceToMove.getColour().getPrintColourAsString() == "white" &&
 					pieceToMove.getPieceType() == "pawn" && finalLocation.getRow() == 0)
 			{
-				cb.board[finalLocation.getRow()][finalLocation.getColumn()] = pawnPromotion(cb);
+				cb.board[finalLocation.getRow()][finalLocation.getColumn()] = pawnPromotion();
 			}
 			else if(player == "black" && pieceToMove.getColour().getPrintColourAsString() == "black" &&
 					pieceToMove.getPieceType() == "pawn" && finalLocation.getRow() == 7)
 			{
-				cb.board[finalLocation.getRow()][finalLocation.getColumn()] = pawnPromotion(cb);
+				cb.board[finalLocation.getRow()][finalLocation.getColumn()] = pawnPromotion();
 			}
 		}
-		
-
 		
 		changePlayer();
 		return validMove;
 	}
 	
+	
 	//TODO NEED A METHOD TO CHECK STATUS AFTER MOVING: CHECK OR CHECKMATE
 	
-	private static boolean checkForCheckMate()
+	private boolean checkForCheckMate()
 	{
 		return false;
 	}
 	
-	private static Piece pawnPromotion(ChessBoard cb)
+	
+	private Piece pawnPromotion()
 	{
 		Piece promotedPiece = null;
 		System.out.println("Your pawn has reached the other side!");
@@ -194,8 +216,7 @@ public class GameManager
 				}
 			}
 		}
-		return promotedPiece;
-		
+		return promotedPiece;		
 	}
 
 	/*
@@ -234,7 +255,7 @@ public class GameManager
 				
 	}*/
 	
-	private static void changePlayer()
+	private void changePlayer()
 	{
 		if(player == "white")
 		{
@@ -246,7 +267,8 @@ public class GameManager
 		}
 	}
 	
-	private static boolean checkLocationIsOnBoard(int newRow, int newColumn)
+	
+	private boolean checkLocationIsOnBoard(int newRow, int newColumn)
 	{
 		boolean isOnBoard = false;
 
@@ -258,8 +280,9 @@ public class GameManager
 		return isOnBoard;
 	}
 	
+	
 	//TODO CHECK ALGEBRAIC NOTATION
-	private static int convertToColumn(String str)
+	private int convertToColumn(String str)
 	{
 		switch(str)
 		{
@@ -275,7 +298,8 @@ public class GameManager
 		}
 	}
 	
-	private static int convertToRow(int i)
+	
+	private int convertToRow(int i)
 	{
 		switch(i)
 		{

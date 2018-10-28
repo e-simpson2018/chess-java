@@ -2,10 +2,14 @@ package chessGame;
 
 public class Pawn extends Piece
 {	
-	public Pawn(Location newSetUpLoc, Colour newColour) 
+	public Pawn(Colour newColour) 
 	{
-		super(newSetUpLoc, newColour);
+		super(newColour);
 		super.pieceType = "pawn";
+		if (newColour ==  Piece.Colour.WHITE)		
+			super.pieceId = 8;		
+		else		
+			super.pieceId = 7;				
 	}
 	
 	//TODO CHECK ALL THE OVERRIDES THAT THYE ARE, IN FACT OVERRIDES

@@ -10,25 +10,20 @@ public class ChessBoard
 	Piece[][] board;
 	List<Piece> capturedWhite;
 	List<Piece> capturedBlack;
-	
-	//Added for GUI, DELETE?
-	public ChessBoard()
-	{
 		
-	}
 	
-	public ChessBoard(Piece wQ, Piece bQ, Piece wK, Piece bK, Piece w1R, Piece w2R, Piece b1R, Piece b2R, Piece w1N, Piece w2N, Piece b1N,
+	public ChessBoard(Piece wQ, Piece bQ, Piece wK, Piece bK, Piece w1R, Piece w2R, Piece b1R, Piece b2R, Piece w1b, Piece w2b, Piece b1b, Piece b2b, Piece w1N, Piece w2N, Piece b1N,
 						Piece b2N, Piece w1P, Piece w2P, Piece w3P, Piece w4P, Piece w5P, Piece w6P, Piece w7P, Piece w8P,
 						Piece b1P, Piece b2P, Piece b3P, Piece b4P, Piece b5P, Piece b6P, Piece b7P, Piece b8P)
 	{
 		board = new Piece[CHESSBOARD_WIDTH][CHESSBOARD_LENGTH];
 		capturedWhite = new ArrayList<>();
 		capturedBlack = new ArrayList<>();
-		setUp(wQ, bQ, wK, bK, w1R, w2R, b1R, b2R, w1N, w2N, b1N, b2N, w1P, w2P, w3P, w4P, w5P, w6P, w7P, w8P,
+		setUp(wQ, bQ, wK, bK, w1R, w2R, b1R, b2R, w1b, w2b, b1b, b2b, w1N, w2N, b1N, b2N, w1P, w2P, w3P, w4P, w5P, w6P, w7P, w8P,
 				b1P, b2P, b3P, b4P, b5P, b6P, b7P, b8P);
 	}
 	
-	public void setUp(Piece wQ, Piece bQ, Piece wK, Piece bK, Piece w1R, Piece w2R, Piece b1R, Piece b2R, Piece w1N, Piece w2N, Piece b1N,
+	public void setUp(Piece wQ, Piece bQ, Piece wK, Piece bK, Piece w1R, Piece w2R, Piece b1R, Piece b2R, Piece w1b, Piece w2b, Piece b1b, Piece b2b, Piece w1N, Piece w2N, Piece b1N,
 						Piece b2N, Piece w1P, Piece w2P, Piece w3P, Piece w4P, Piece w5P, Piece w6P, Piece w7P, Piece w8P,
 						Piece b1P, Piece b2P, Piece b3P, Piece b4P, Piece b5P, Piece b6P, Piece b7P, Piece b8P)
 	{
@@ -41,9 +36,13 @@ public class ChessBoard
 		board[7][0] = w1R;
 		board[7][7] = w2R;
 		board[0][1] = b1N;
-		board[0][6] = b2N;
+		board[0][6] = b2N;		
 		board[7][1] = w1N;
 		board[7][6] = w2N;
+		board[7][2] = w1b;
+		board[7][5] = w2b;
+		board[0][2] = b1b;
+		board[0][5] = b2b;		
 		board[6][0] = w1P;
 		board[6][1] = w2P;
 		board[6][2] = w3P;
@@ -60,18 +59,15 @@ public class ChessBoard
 		board[1][5] = b6P;
 		board[1][6] = b7P;
 		board[1][7] = b8P;
-
-
 	}
 	
 	//TODO ADD COLUMN AND ROW TO PRINT NOTATION
-	public void displayBoard()
+	public void displayBoardConsole()
 	{
 		for(int i = 0; i < CHESSBOARD_LENGTH; i++)
 		{
 			for(int j = 0; j < CHESSBOARD_WIDTH; j++)
 			{
-
 				System.out.print("    " + board[i][j] + "  \t|");
 			}
 			System.out.println();
@@ -91,6 +87,29 @@ public class ChessBoard
 			}
 		}  
 		return null;
+	}
+	
+	
+	public int[][] getBoardStatus()
+	{
+		int[][] matrix = new int[CHESSBOARD_WIDTH][CHESSBOARD_LENGTH]; 
+		
+		for(int i = 0; i < CHESSBOARD_WIDTH; i++)
+		{
+			for(int j = 0; j < CHESSBOARD_LENGTH; j++)
+			{				
+				if(board[i][j] != null)
+				{					
+					matrix[i][j] = board[i][j].getPieceId();					
+				}
+				else
+				{
+					matrix[i][j] = 0;
+				}
+			}
+		}
+		
+		return matrix;
 	}
 	
 	
