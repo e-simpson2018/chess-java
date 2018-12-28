@@ -11,8 +11,7 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
-
-
+//THIS IS THE CLASS THAT HANDLES THE GAME
 public class GameGUI implements ActionListener
 {
 	public Map<Integer, Image> dictImages = new HashMap<Integer, Image>();
@@ -28,14 +27,90 @@ public class GameGUI implements ActionListener
 	//private Color YELLOW = new Color (255, 255, 0);
 	private Color LIGHT_BLUE = new Color (51, 153, 255);	
 	
+	//Create all the board pieces
+	private Rook rookW1 = new Rook(Piece.Colour.WHITE);
+	private Rook rookW2 = new Rook(Piece.Colour.WHITE);
+	private Rook rookB1 = new Rook(Piece.Colour.BLACK);
+	private Rook rookB2 = new Rook(Piece.Colour.BLACK);
+	private Knight knightW1 = new Knight(Piece.Colour.WHITE);
+	private Knight knightW2 = new Knight(Piece.Colour.WHITE);
+	private Knight knightB1 = new Knight(Piece.Colour.BLACK);
+	private Knight knightB2 = new Knight(Piece.Colour.BLACK);
+	private Bishop bishopW1 = new Bishop(Piece.Colour.WHITE);
+	private Bishop  bishopW2 = new Bishop(Piece.Colour.WHITE);
+	private Bishop bishopB1 = new Bishop(Piece.Colour.BLACK);
+	private Bishop bishopB2 = new Bishop(Piece.Colour.BLACK);
+	private Queen queenW = new Queen(Piece.Colour.WHITE);
+	private Queen queenB = new Queen(Piece.Colour.BLACK);
+	private King kingW = new King(Piece.Colour.WHITE);
+	private King kingB = new King(Piece.Colour.BLACK);
+	private Pawn pawnW1 = new Pawn(Piece.Colour.WHITE);
+	private Pawn pawnW2 = new Pawn(Piece.Colour.WHITE);
+	private Pawn pawnW3 = new Pawn(Piece.Colour.WHITE);
+	private Pawn pawnW4 = new Pawn(Piece.Colour.WHITE);
+	private Pawn pawnW5 = new Pawn(Piece.Colour.WHITE);
+	private Pawn pawnW6 = new Pawn(Piece.Colour.WHITE);
+	private Pawn pawnW7 = new Pawn(Piece.Colour.WHITE);
+	private Pawn pawnW8 = new Pawn(Piece.Colour.WHITE);
+	private Pawn pawnB1 = new Pawn(Piece.Colour.BLACK);
+	private Pawn pawnB2 = new Pawn(Piece.Colour.BLACK);
+	private Pawn pawnB3 = new Pawn(Piece.Colour.BLACK);
+	private Pawn pawnB4 = new Pawn(Piece.Colour.BLACK);
+	private Pawn pawnB5 = new Pawn(Piece.Colour.BLACK);
+	private Pawn pawnB6 = new Pawn(Piece.Colour.BLACK);
+	private Pawn pawnB7 = new Pawn(Piece.Colour.BLACK);
+	private Pawn pawnB8 = new Pawn(Piece.Colour.BLACK);
+	
+	public ChessBoard cb;
+	private GameManager gm;	
+	private boolean isFirstClick = true;
+	private Location initLocation;
+	private Piece playerPiece;
+	
 	
 	/**
 	 * Constructor
 	 */
 	public GameGUI()
 	{
+		gm = new GameManager();
 		loadPiecesImages();
-		initializeGui();			
+		initializeGui();
+		//gm.initializeGameManager();
+	}
+	
+	
+	
+	public void initGame() 
+	{
+		//Create a new board passing in all pieces
+		cb = new ChessBoard(queenW, queenB, kingW, kingB, rookW1, rookW2, rookB1, rookB2, bishopW1, bishopW2, bishopB1, bishopB2, knightW1, knightW2, knightB1, knightB2, pawnW1, pawnW2, pawnW3, pawnW4, pawnW5, pawnW6, pawnW7, pawnW8,
+										pawnB1, pawnB2, pawnB3, pawnB4, pawnB5, pawnB6, pawnB7, pawnB8);
+		//Debugging
+		//cb.displayBoardConsole();
+		
+		// start gui and display the status of the board
+		startGui();
+		UpdateBoardImages(cb.getBoardStatus());
+	}
+			
+	
+	
+	public void startGame()
+	{
+		do 
+		{
+			//takeATurn();
+			//cb.displayBoardConsole();
+			updateGameGui();
+		}while(!gm.checkForCheckMate());
+	}
+	
+	
+	
+	public void updateGameGui()
+	{
+		UpdateBoardImages(cb.getBoardStatus());
 	}
 	
 	
@@ -168,6 +243,7 @@ public class GameGUI implements ActionListener
 	
 	
 	// TODO This should be private, at the moment is being used for tests 
+	//The matrix passed reflects the piece ids in their current positions
 	public void UpdateBoardImages(int[][] matrix)	// [rows][columns]
 	{
 		for (int i = 0; i < boardsize; i++)		// rows
@@ -193,7 +269,7 @@ public class GameGUI implements ActionListener
 	{
 		JButton b = (JButton)e.getSource();
 		int col = -1;
-		int row = -1;		  
+		int row = -1;
 
 		// first find which button (board square) was clicked.
 		for (int i = 0; i < boardsize; i++) 
@@ -202,6 +278,7 @@ public class GameGUI implements ActionListener
 			{
 				if (chessBoardSquares[i][j] == b) 
 				{
+					//TODO change to matrix cols and rows??
 					col = j;
 					row = i;					  
 				}	
@@ -221,13 +298,51 @@ public class GameGUI implements ActionListener
 	private void CheckSquareClicked(int row, int col)
 	{
 		System.out.println("row: " + row + "   col: " + col);
-
-		// Check here:
-		// - if it is the first pick, if the cell has a piece of the colour of the player
-		// - if it is the second pick and if it is a valid movement
-
-		// if it is the first pick and it is a valid movement then highlight the board cell
-		chessBoardSquares[row][col].setBackground(LIGHT_BLUE);
+		if(isFirstClick)
+		{
+			playerPiece = gm.getPiece(row, col, cb);
+			initLocation = new Location(row, col);
+			if(!gm.isPiecePlayersColour(playerPiece))
+			{
+				System.out.println("You cannot move your opponent's piece");
+				//TODO SOMETHING????? break?
+			}
+			chessBoardSquares[row][col].setBackground(LIGHT_BLUE);
+			isFirstClick = false;
+		}
+		else
+		{
+			Location finalLocation = new Location(row, col);
+			if(playerPiece.isPieceMovement(initLocation, finalLocation) && gm.isOnBoard(row, col))
+			{
+				Piece pieceOnSquare = gm.getPiece(row, col, cb);
+				if(pieceOnSquare==null)
+				{
+					gm.movePiece(initLocation, finalLocation, cb, playerPiece);
+					chessBoardSquares[row][col].setBackground(LIGHT_BLUE);
+				}
+				else 
+				{
+					//NEED TO GET LANDING PIECE, NOT PLAYER'S PIECE!!!!!!
+					if(gm.isPiecePlayersColour(pieceOnSquare))
+					{
+						System.out.println("That move is not valid, you cannot land on your own piece");
+					}
+					else
+					{
+						gm.capturePiece(pieceOnSquare, cb);
+						gm.movePiece(initLocation, finalLocation, cb, playerPiece);
+						chessBoardSquares[row][col].setBackground(LIGHT_BLUE);
+					}
+				}
+			}
+			else
+			{
+				System.out.println("That move is not allowed");
+				//TODO do something else?
+			}
+			
+			isFirstClick = true;
+		}
 	} 
-
 }

@@ -67,9 +67,11 @@ public abstract class Piece
 		return pieceId;
 	}
 	
+	//TODO REDO THESE METHODS
 	//TODO CHECK IF THERE IS A STRATEGY TO NOT PASS CHESSBOARD HERE BECAUSE PAWN IS THE ONLY ONE THAT NEEDS IT
-	protected abstract boolean movePiece(Location initialLocation, Location finalLocation, ChessBoard cb);
+	protected abstract boolean isPieceMovement(Location initialLocation, Location finalLocation);
 	
+	protected abstract boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb);
 	
 	//TODO CHECK STRATEGY ON THESE METHODS
 	protected boolean verticalMovement(Location initialLocation, Location finalLocation)

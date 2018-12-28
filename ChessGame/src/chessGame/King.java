@@ -19,9 +19,15 @@ public class King extends Piece
 			super.pieceId = 3;
 	}
 
+
+	protected boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb)
+	{
+		return true;
+	}
+	
 	//TODO CHECK ALL THE OVERRIDES THAT THYE ARE, IN FACT OVERRIDES
 	@Override
-	protected boolean movePiece(Location initialLocation, Location finalLocation, ChessBoard cb) 
+	protected boolean isPieceMovement(Location initialLocation, Location finalLocation) 
 	{
 		boolean isValidMove = false;
 		

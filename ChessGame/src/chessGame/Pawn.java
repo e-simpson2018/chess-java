@@ -12,9 +12,15 @@ public class Pawn extends Piece
 			super.pieceId = 7;				
 	}
 	
+	protected boolean isPieceMovement(Location initialLocation, Location finalLocation)
+	{
+		return true;
+	}
+
+	
 	//TODO CHECK ALL THE OVERRIDES THAT THYE ARE, IN FACT OVERRIDES
 	@Override
-	protected boolean movePiece(Location initialLocation, Location finalLocation, ChessBoard cb) 
+	protected boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb) 
 	{
 		
 		if(this.getColour() == Piece.Colour.WHITE)

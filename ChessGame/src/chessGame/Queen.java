@@ -14,8 +14,14 @@ public class Queen extends Piece
 			super.pieceId = 9;
 	}
 	
+
+	protected boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb)
+	{
+		return true;
+	}
+	
 	@Override
-	protected boolean movePiece(Location initialLocation, Location finalLocation, ChessBoard cb) 
+	protected boolean isPieceMovement(Location initialLocation, Location finalLocation) 
 	{
 		boolean isValidMove = false;
 		

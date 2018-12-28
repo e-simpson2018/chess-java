@@ -15,8 +15,14 @@ public class Rook extends Piece
 	
 	
 
+	protected boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb)
+	{
+		return true;
+	}
+	
+
 	@Override
-	protected boolean movePiece(Location initialLocation, Location finalLocation, ChessBoard cb) 
+	protected boolean isPieceMovement(Location initialLocation, Location finalLocation) 
 	{
 		boolean isValidMove = false;
 		

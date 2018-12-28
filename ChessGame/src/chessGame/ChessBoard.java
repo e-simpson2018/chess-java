@@ -12,56 +12,55 @@ public class ChessBoard
 	List<Piece> capturedBlack;
 		
 	
-	public ChessBoard(Piece wQ, Piece bQ, Piece wK, Piece bK, Piece w1R, Piece w2R, Piece b1R, Piece b2R, Piece w1b, Piece w2b, Piece b1b, Piece b2b, Piece w1N, Piece w2N, Piece b1N,
-						Piece b2N, Piece w1P, Piece w2P, Piece w3P, Piece w4P, Piece w5P, Piece w6P, Piece w7P, Piece w8P,
-						Piece b1P, Piece b2P, Piece b3P, Piece b4P, Piece b5P, Piece b6P, Piece b7P, Piece b8P)
+	public ChessBoard(Piece queenW, Piece queenB, Piece kingW, Piece kingB, Piece rookW1, Piece rookW2, Piece rookB1, Piece rookB2, Piece bishopW1, Piece bishopW2, Piece bishopB1, Piece bishopB2, Piece knightW1, Piece knightW2, Piece knightB1,
+						Piece knightB2, Piece pawnW1, Piece pawnW2, Piece pawnW3, Piece pawnW4, Piece pawnW5, Piece pawnW6, Piece pawnW7, Piece pawnW8,
+						Piece pawnB1, Piece pawnB2, Piece pawnB3, Piece pawnB4, Piece pawnB5, Piece pawnB6, Piece pawnB7, Piece pawnB8)
 	{
 		board = new Piece[CHESSBOARD_WIDTH][CHESSBOARD_LENGTH];
 		capturedWhite = new ArrayList<>();
 		capturedBlack = new ArrayList<>();
-		setUp(wQ, bQ, wK, bK, w1R, w2R, b1R, b2R, w1b, w2b, b1b, b2b, w1N, w2N, b1N, b2N, w1P, w2P, w3P, w4P, w5P, w6P, w7P, w8P,
-				b1P, b2P, b3P, b4P, b5P, b6P, b7P, b8P);
+		setUp(queenW, queenB, kingW, kingB, rookW1, rookW2, rookB1, rookB2, bishopW1, bishopW2, bishopB1, bishopB2, knightW1, knightW2, knightB1, knightB2, pawnW1, pawnW2, pawnW3, pawnW4, pawnW5, pawnW6, pawnW7, pawnW8,
+				pawnB1, pawnB2, pawnB3, pawnB4, pawnB5, pawnB6, pawnB7, pawnB8);
 	}
 	
-	public void setUp(Piece wQ, Piece bQ, Piece wK, Piece bK, Piece w1R, Piece w2R, Piece b1R, Piece b2R, Piece w1b, Piece w2b, Piece b1b, Piece b2b, Piece w1N, Piece w2N, Piece b1N,
-						Piece b2N, Piece w1P, Piece w2P, Piece w3P, Piece w4P, Piece w5P, Piece w6P, Piece w7P, Piece w8P,
-						Piece b1P, Piece b2P, Piece b3P, Piece b4P, Piece b5P, Piece b6P, Piece b7P, Piece b8P)
+	public void setUp(Piece queenW, Piece queenB, Piece kingW, Piece kingB, Piece rookW1, Piece rookW2, Piece rookB1, Piece rookB2, Piece bishopW1, Piece bishopW2, Piece bishopB1, Piece bishopB2, Piece knightW1, Piece knightW2, Piece knightB1,
+						Piece knightB2, Piece pawnW1, Piece pawnW2, Piece pawnW3, Piece pawnW4, Piece pawnW5, Piece pawnW6, Piece pawnW7, Piece pawnW8,
+						Piece pawnB1, Piece pawnB2, Piece pawnB3, Piece pawnB4, Piece pawnB5, Piece pawnB6, Piece pawnB7, Piece pawnB8)
 	{
-		board[0][4] = bQ;
-		board[7][3] = wQ;
-		board[0][3] = bK;
-		board[7][4] = wK;
-		board[0][0] = b1R;
-		board[0][7] = b2R;
-		board[7][0] = w1R;
-		board[7][7] = w2R;
-		board[0][1] = b1N;
-		board[0][6] = b2N;		
-		board[7][1] = w1N;
-		board[7][6] = w2N;
-		board[7][2] = w1b;
-		board[7][5] = w2b;
-		board[0][2] = b1b;
-		board[0][5] = b2b;		
-		board[6][0] = w1P;
-		board[6][1] = w2P;
-		board[6][2] = w3P;
-		board[6][3] = w4P;
-		board[6][4] = w5P;
-		board[6][5] = w6P;
-		board[6][6] = w7P;
-		board[6][7] = w8P;
-		board[1][0] = b1P;
-		board[1][1] = b2P;
-		board[1][2] = b3P;
-		board[1][3] = b4P;
-		board[1][4] = b5P;
-		board[1][5] = b6P;
-		board[1][6] = b7P;
-		board[1][7] = b8P;
+		board[0][4] = queenB;
+		board[7][3] = queenW;
+		board[0][3] = kingB;
+		board[7][4] = kingW;
+		board[0][0] = rookB1;
+		board[0][7] = rookB2;
+		board[7][0] = rookW1;
+		board[7][7] = rookW2;
+		board[0][1] = knightB1;
+		board[0][6] = knightB2;		
+		board[7][1] = knightW1;
+		board[7][6] = knightW2;
+		board[7][2] = bishopW1;
+		board[7][5] = bishopW2;
+		board[0][2] = bishopB1;
+		board[0][5] = bishopB2;		
+		board[6][0] = pawnW1;
+		board[6][1] = pawnW2;
+		board[6][2] = pawnW3;
+		board[6][3] = pawnW4;
+		board[6][4] = pawnW5;
+		board[6][5] = pawnW6;
+		board[6][6] = pawnW7;
+		board[6][7] = pawnW8;
+		board[1][0] = pawnB1;
+		board[1][1] = pawnB2;
+		board[1][2] = pawnB3;
+		board[1][3] = pawnB4;
+		board[1][4] = pawnB5;
+		board[1][5] = pawnB6;
+		board[1][6] = pawnB7;
+		board[1][7] = pawnB8;
 	}
 	
-	//TODO ADD COLUMN AND ROW TO PRINT NOTATION
 	public void displayBoardConsole()
 	{
 		for(int i = 0; i < CHESSBOARD_LENGTH; i++)
