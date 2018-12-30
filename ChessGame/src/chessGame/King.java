@@ -20,14 +20,14 @@ public class King extends Piece
 	}
 
 
-	protected boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb)
-	{
-		return true;
-	}
+	//protected boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb)
+	//{
+		//return true;
+	//}
 	
 	//TODO CHECK ALL THE OVERRIDES THAT THYE ARE, IN FACT OVERRIDES
 	@Override
-	protected boolean isPieceMovement(Location initialLocation, Location finalLocation) 
+	protected boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb) 
 	{
 		boolean isValidMove = false;
 		

@@ -69,8 +69,9 @@ public abstract class Piece
 	
 	//TODO REDO THESE METHODS
 	//TODO CHECK IF THERE IS A STRATEGY TO NOT PASS CHESSBOARD HERE BECAUSE PAWN IS THE ONLY ONE THAT NEEDS IT
-	protected abstract boolean isPieceMovement(Location initialLocation, Location finalLocation);
+	//protected abstract boolean isPieceMovement(Location initialLocation, Location finalLocation);
 	
+	//ONLY PAWNS USE THE CB
 	protected abstract boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb);
 	
 	//TODO CHECK STRATEGY ON THESE METHODS

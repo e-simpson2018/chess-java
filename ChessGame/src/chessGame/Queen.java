@@ -15,13 +15,13 @@ public class Queen extends Piece
 	}
 	
 
-	protected boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb)
-	{
-		return true;
-	}
+	//protected boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb)
+	//{
+		//return true;
+	//}
 	
 	@Override
-	protected boolean isPieceMovement(Location initialLocation, Location finalLocation) 
+	protected boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb) 
 	{
 		boolean isValidMove = false;
 		

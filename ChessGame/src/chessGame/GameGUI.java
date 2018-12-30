@@ -305,18 +305,25 @@ public class GameGUI implements ActionListener
 			if(!gm.isPiecePlayersColour(playerPiece))
 			{
 				System.out.println("You cannot move your opponent's piece");
-				//TODO SOMETHING????? break?
+				//TODO make an exception for this event??
+				return;
 			}
 			chessBoardSquares[row][col].setBackground(LIGHT_BLUE);
 			isFirstClick = false;
 		}
 		else
 		{
+			System.out.println("inside second click");
 			Location finalLocation = new Location(row, col);
-			if(playerPiece.isPieceMovement(initLocation, finalLocation) && gm.isOnBoard(row, col))
+			
+			
+			//TODO with the gui, don't need to check if on board!!! Take out
+			if(playerPiece.isPieceMovement(initLocation, finalLocation, cb) && gm.isOnBoard(row, col))
 			{
-				Piece pieceOnSquare = gm.getPiece(row, col, cb);
-				if(pieceOnSquare==null)
+				Piece pieceOnDestination = gm.getPiece(row, col, cb);
+
+				//check square to move to is empty
+				if(pieceOnDestination == null)
 				{
 					gm.movePiece(initLocation, finalLocation, cb, playerPiece);
 					chessBoardSquares[row][col].setBackground(LIGHT_BLUE);
@@ -324,13 +331,13 @@ public class GameGUI implements ActionListener
 				else 
 				{
 					//NEED TO GET LANDING PIECE, NOT PLAYER'S PIECE!!!!!!
-					if(gm.isPiecePlayersColour(pieceOnSquare))
+					if(gm.isPiecePlayersColour(pieceOnDestination))
 					{
 						System.out.println("That move is not valid, you cannot land on your own piece");
 					}
 					else
 					{
-						gm.capturePiece(pieceOnSquare, cb);
+						gm.capturePiece(pieceOnDestination, cb);
 						gm.movePiece(initLocation, finalLocation, cb, playerPiece);
 						chessBoardSquares[row][col].setBackground(LIGHT_BLUE);
 					}
