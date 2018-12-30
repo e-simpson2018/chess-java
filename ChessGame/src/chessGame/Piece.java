@@ -102,9 +102,10 @@ public abstract class Piece
 	protected boolean diagonalMovement(Location initialLocation, Location finalLocation)
 	{
 		boolean isDiagonal = false;
-		if((Math.abs(((initialLocation.getColumn() - finalLocation.getColumn()) /
-				(initialLocation.getRow() - finalLocation.getRow()))) == 1))
+		if((Math.abs((initialLocation.getColumn() - finalLocation.getColumn()) %
+				(initialLocation.getRow() - finalLocation.getRow())) == 0 ))
 		{
+
 			isDiagonal = true;
 		}
 		

@@ -31,52 +31,53 @@ public class King extends Piece
 	{
 		boolean isValidMove = false;
 		
-		if(verticalMovement(initialLocation, finalLocation) ||
-				horizontalMovement(initialLocation, finalLocation) ||
-				diagonalMovement(initialLocation, finalLocation))
+		if(kingVertical(initialLocation, finalLocation) ||
+				kingHorizontal(initialLocation, finalLocation) ||
+				kingDiagonal(initialLocation, finalLocation))
 		{
 			isValidMove = true;
 		}
 		return isValidMove;
 	}
 	
-	@Override
-	protected boolean verticalMovement(Location initialLocation, Location finalLocation)
+	private boolean kingVertical(Location initialLocation, Location finalLocation)
 	{
-		boolean isVertical = false;
-		if(initialLocation.getRow() - finalLocation.getRow() == Math.abs(1) &&
-			initialLocation.getColumn() - finalLocation.getColumn() == 0)
+		boolean isKingVertical = false;
+		
+		if(verticalMovement(initialLocation, finalLocation) &&
+			(Math.abs(initialLocation.getRow() - finalLocation.getRow()) == 1))
 		{
-			isVertical = true;
+			isKingVertical = true;
 		}
 		
-		return isVertical;
-	}
-		
-	protected boolean horizontalMovement(Location initialLocation, Location finalLocation)
-	{
-		boolean isHorizontal = false;
-		if(initialLocation.getColumn() - finalLocation.getColumn() == Math.abs(1) &&
-				initialLocation.getRow() - finalLocation.getRow() == 0)
-		{
-			isHorizontal = true;
-		}
-		
-		return isHorizontal;
+		return isKingVertical;
 	}
 	
-	protected boolean diagonalMovement(Location initialLocation, Location finalLocation)
+	private boolean kingHorizontal(Location initialLocation, Location finalLocation)
 	{
-		boolean isDiagonal = false;
-		if(Math.abs(initialLocation.getColumn() - finalLocation.getColumn()) == 1 &&
-			Math.abs(initialLocation.getRow() - finalLocation.getRow()) == 1)
+		boolean isKingHorizontal = false;
+		
+		if(horizontalMovement(initialLocation, finalLocation) &&
+			(Math.abs(initialLocation.getColumn() - finalLocation.getColumn()) == 1))
 		{
-			isDiagonal = true;
+			isKingHorizontal = true;
 		}
 		
-		return isDiagonal;
+		return isKingHorizontal;
 	}
 	
+	private boolean kingDiagonal(Location initialLocation, Location finalLocation)
+	{
+		boolean isKingDiagonal = false;
+		
+		if(diagonalMovement(initialLocation, finalLocation) &&
+			(Math.abs(initialLocation.getColumn() - finalLocation.getColumn()) == 1))
+		{
+			isKingDiagonal = true;
+		}
+		
+		return isKingDiagonal;
+	}
 	
 	
 	
