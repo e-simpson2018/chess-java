@@ -326,11 +326,10 @@ public class GameGUI implements ActionListener
 				if(pieceOnDestination == null)
 				{
 					gm.movePiece(initLocation, finalLocation, cb, playerPiece);
-					chessBoardSquares[row][col].setBackground(LIGHT_BLUE);
+					//chessBoardSquares[row][col].setBackground(LIGHT_BLUE);
 				}
 				else 
 				{
-					//NEED TO GET LANDING PIECE, NOT PLAYER'S PIECE!!!!!!
 					if(gm.isPiecePlayersColour(pieceOnDestination))
 					{
 						System.out.println("That move is not valid, you cannot land on your own piece");
@@ -339,7 +338,7 @@ public class GameGUI implements ActionListener
 					{
 						gm.capturePiece(pieceOnDestination, cb);
 						gm.movePiece(initLocation, finalLocation, cb, playerPiece);
-						chessBoardSquares[row][col].setBackground(LIGHT_BLUE);
+						//chessBoardSquares[row][col].setBackground(LIGHT_BLUE);
 					}
 				}
 			}
@@ -348,6 +347,17 @@ public class GameGUI implements ActionListener
 				System.out.println("That move is not allowed");
 				//TODO do something else?
 			}
+			
+			
+			//return square to original colour
+			if ((initLocation.getColumn() % 2 == 1 && initLocation.getRow() % 2 == 1) || (initLocation.getColumn() % 2 == 0 && initLocation.getRow() % 2 == 0)) 
+            {
+				chessBoardSquares[initLocation.getRow()][initLocation.getColumn()].setBackground(LIGHT_YELLOW);
+            } 
+            else 
+            {
+            	chessBoardSquares[initLocation.getRow()][initLocation.getColumn()].setBackground(GREEN);
+            }     
 			
 			isFirstClick = true;
 		}
