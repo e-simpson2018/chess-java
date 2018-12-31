@@ -2,11 +2,6 @@ package chessGame;
 
 public class Knight extends Piece
 {	
-	/*public Knight(Location newSetUpLoc, Colour newColour) 
-	{
-		super(newSetUpLoc, newColour);
-		super.pieceType = "knight";
-	}*/
 	
 	public Knight(Colour newColour) 
 	{
@@ -29,43 +24,53 @@ public class Knight extends Piece
 	protected boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb) 
 	{
 		boolean isValidMove = false;
-		
-		if(verticalMovement(initialLocation, finalLocation) ||
-			horizontalMovement(initialLocation, finalLocation))
+		System.out.println("inside knight movement");
+		if(horizontalL(initialLocation, finalLocation) ||
+			verticalL(initialLocation, finalLocation))
 		{
 			isValidMove = true;
 		}
 		return isValidMove;
 	}
 	
-	@Override 
-	protected boolean horizontalMovement(Location initialLocation, Location finalLocation)
+	private boolean horizontalL(Location initialLocation, Location finalLocation)
 	{
-		
-		boolean isHorizontal = false;
-		if(Math.abs(initialLocation.getRow() - finalLocation.getRow()) == 1 &&
-				Math.abs(initialLocation.getColumn() - finalLocation.getColumn()) == 3)
+		boolean flag1 = false;
+		System.out.println("inside horizontalL");
+
+		if(Math.abs(initialLocation.getRow() - finalLocation.getRow()) == 1)
 		{
-			isHorizontal = true;
+			if(initialLocation.getColumn() - finalLocation.getColumn() == 2)
+			{
+				flag1 = true;
+			}
+			else if(initialLocation.getColumn() - finalLocation.getColumn() == -2)
+			{
+				flag1 = true;
+			}
 		}
 		
-		return isHorizontal;
+		return flag1;
 	}
 	
-	
-	
-	@Override 
-	protected boolean verticalMovement(Location initialLocation, Location finalLocation)
+	private boolean verticalL(Location initialLocation, Location finalLocation)
 	{
+		boolean flag2 = false;
+		System.out.println("inside verticalL");
+
 		
-		boolean isVertical = false;
-		if(Math.abs(initialLocation.getRow() - finalLocation.getRow()) == 3 &&
-				Math.abs(initialLocation.getColumn() - finalLocation.getColumn()) == 1)
+		if(Math.abs(initialLocation.getColumn() - finalLocation.getColumn()) == 1)
 		{
-			isVertical = true;
+			if(initialLocation.getRow() - finalLocation.getRow() == 2)
+			{
+				flag2 = true;
+			}
+			else if(initialLocation.getRow() - finalLocation.getRow() == -2)
+			{
+				flag2 = true;
+			}
 		}
-		
-		return isVertical;
+		return flag2;
 	}
 	
 	
