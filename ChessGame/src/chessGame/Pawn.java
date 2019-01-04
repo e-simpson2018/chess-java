@@ -12,7 +12,7 @@ public class Pawn extends Piece
 			super.pieceId = 7;				
 	}
 	
-	//protected boolean isPieceMovement(Location initialLocation, Location finalLocation)
+	//protected boolean validPieceMovement(Location initialLocation, Location finalLocation)
 	//{
 		//return true;
 	//}
@@ -20,7 +20,7 @@ public class Pawn extends Piece
 	
 	//TODO CHECK ALL THE OVERRIDES THAT THYE ARE, IN FACT OVERRIDES
 	@Override
-	protected boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb) 
+	protected boolean validPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb) 
 	{
 		System.out.println("inside movement pawn");
 		boolean isValid = false;

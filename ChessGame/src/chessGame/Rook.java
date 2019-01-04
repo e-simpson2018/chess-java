@@ -12,24 +12,19 @@ public class Rook extends Piece
 		else		
 			super.pieceId = 11;
 	}	
-	
-	
-
-	//protected boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb)
-	//{
-		//return true;
-	//}
-	
 
 	@Override
-	protected boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb) 
+	protected boolean validPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb) 
 	{
 		boolean isValidMove = false;
 		
 		if(verticalMovement(initialLocation, finalLocation) ||
 			horizontalMovement(initialLocation, finalLocation))
 		{
-			isValidMove = true;
+			if(checkNothingInbetween(initialLocation, finalLocation, cb))
+			{
+				isValidMove = true;
+			}
 		}
 		return isValidMove;
 	}

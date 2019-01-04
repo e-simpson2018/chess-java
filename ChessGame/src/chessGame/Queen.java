@@ -14,25 +14,28 @@ public class Queen extends Piece
 			super.pieceId = 9;
 	}
 	
-
-	//protected boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb)
-	//{
-		//return true;
-	//}
-	
 	@Override
-	protected boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb) 
+	protected boolean validPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb) 
 	{
+		System.out.println("inside queen piecemovement");
+
 		boolean isValidMove = false;
 		
 		if(verticalMovement(initialLocation, finalLocation) ||
 			horizontalMovement(initialLocation, finalLocation) ||
 			diagonalMovement(initialLocation, finalLocation))
 		{
-			isValidMove = true;
+			System.out.println("inside allthemoves");
+
+			if(checkNothingInbetween(initialLocation, finalLocation, cb))
+			{
+				isValidMove = true;
+			}
 		}
 		return isValidMove;
 	}
+	
+	
 	
 	public String toString() 
 	{ 

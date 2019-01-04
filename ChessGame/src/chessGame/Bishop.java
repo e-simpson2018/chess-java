@@ -2,11 +2,6 @@ package chessGame;
 
 public class Bishop extends Piece
 {	
-	/*public Bishop(Location newSetUpLoc, Colour newColour) 
-	{
-		super(newSetUpLoc, newColour);
-		super.pieceType = "rook";
-	}*/
 	
 	public Bishop(Colour newColour) 
 	{
@@ -19,21 +14,17 @@ public class Bishop extends Piece
 			super.pieceId = 1;
 	}
 	
-
-	//protected boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb)
-	//{
-		//return true;
-	//}
-
-	
 	@Override
-	protected boolean isPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb) 
+	protected boolean validPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb) 
 	{
 		boolean isValidMove = false;
 		
 		if(diagonalMovement(initialLocation, finalLocation))
 		{
-			isValidMove = true;
+			if(checkNothingInbetween(initialLocation, finalLocation, cb))
+			{
+				isValidMove = true;
+			}
 		}
 		return isValidMove;
 	}

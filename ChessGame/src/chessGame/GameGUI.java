@@ -65,7 +65,7 @@ public class GameGUI implements ActionListener
 	private GameManager gm;	
 	private boolean isFirstClick = true;
 	private Location initLocation;
-	private Piece playerPiece;
+	private Piece pieceToMove;
 	
 	
 	/**
@@ -100,8 +100,6 @@ public class GameGUI implements ActionListener
 	{
 		do 
 		{
-			//takeATurn();
-			//cb.displayBoardConsole();
 			updateGameGui();
 		}while(!gm.checkForCheckMate());
 	}
@@ -297,12 +295,11 @@ public class GameGUI implements ActionListener
 	*/
 	private void CheckSquareClicked(int row, int col)
 	{
-		System.out.println("row: " + row + "   col: " + col);
 		if(isFirstClick)
 		{
-			playerPiece = gm.getPiece(row, col, cb);
+			pieceToMove = gm.getPiece(row, col, cb);
 			initLocation = new Location(row, col);
-			if(!gm.isPiecePlayersColour(playerPiece))
+			if(!gm.isPiecePlayersColour(pieceToMove))
 			{
 				System.out.println("You cannot move your opponent's piece");
 				//TODO make an exception for this event??
@@ -313,32 +310,28 @@ public class GameGUI implements ActionListener
 		}
 		else
 		{
-			System.out.println("inside second click");
 			Location finalLocation = new Location(row, col);
 			
-			
-			//TODO with the gui, don't need to check if on board!!! Take out
-			if(playerPiece.isPieceMovement(initLocation, finalLocation, cb) && gm.isOnBoard(row, col))
+			if(pieceToMove.validPieceMovement(initLocation, finalLocation, cb))
 			{
 				Piece pieceOnDestination = gm.getPiece(row, col, cb);
 
 				//check square to move to is empty
 				if(pieceOnDestination == null)
 				{
-					gm.movePiece(initLocation, finalLocation, cb, playerPiece);
-					//chessBoardSquares[row][col].setBackground(LIGHT_BLUE);
+					gm.movePiece(initLocation, finalLocation, cb, pieceToMove);
 				}
 				else 
 				{
 					if(gm.isPiecePlayersColour(pieceOnDestination))
 					{
 						System.out.println("That move is not valid, you cannot land on your own piece");
+						//TODO make an exception?
 					}
 					else
 					{
 						gm.capturePiece(pieceOnDestination, cb);
-						gm.movePiece(initLocation, finalLocation, cb, playerPiece);
-						//chessBoardSquares[row][col].setBackground(LIGHT_BLUE);
+						gm.movePiece(initLocation, finalLocation, cb, pieceToMove);
 					}
 				}
 			}
