@@ -5,8 +5,8 @@ import java.util.List;
 
 public class ChessBoard 
 {
-	public static final int CHESSBOARD_WIDTH = 8;
-	public static final int CHESSBOARD_LENGTH = 8;
+	public final int CHESSBOARD_WIDTH = 8;
+	public final int CHESSBOARD_LENGTH = 8;
 	Piece[][] board;
 	List<Piece> capturedWhite;
 	List<Piece> capturedBlack;

@@ -17,10 +17,12 @@ public class Bishop extends Piece
 	@Override
 	protected boolean validPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb) 
 	{
+		System.out.println("inside bishop validMovement");
 		boolean isValidMove = false;
 		
 		if(diagonalMovement(initialLocation, finalLocation))
 		{
+		
 			if(checkNothingInbetween(initialLocation, finalLocation, cb))
 			{
 				isValidMove = true;

@@ -27,16 +27,18 @@ public abstract class Piece
 	protected int pieceId;
 	//added for the gui - in constructor too
 	protected Location setUpLocation;	
-	
+	public int temp1;
+	public int temp2;
+	public int temp3;
+	public int temp4;
 
+	//Getters and setters
 	
 	public Piece(Colour newColour)
 	{
 		colour = newColour;
-		//setUpLocation = newSetUpLoc;
 	}
 	
-	//IS THIS THE RIGHT GETTER FOR AN EMUN??
 	public Colour getColour()
 	{
 		return colour;
@@ -102,27 +104,20 @@ public abstract class Piece
 	protected boolean diagonalMovement(Location initialLocation, Location finalLocation)
 	{
 		boolean isDiagonal = false;
-		if((Math.abs((initialLocation.getColumn() - finalLocation.getColumn()) %
-				(initialLocation.getRow() - finalLocation.getRow())) == 0 ))
+
+		if(Math.abs(initialLocation.getColumn() - finalLocation.getColumn()) /
+				Math.abs(initialLocation.getRow() - finalLocation.getRow()) == 1)
 		{
 
 			isDiagonal = true;
 		}
-		
 		return isDiagonal;
 	}
 	
-	protected boolean checkNothingInbetween(Location initialLocation, Location finalLocation, ChessBoard cb)
+	public void setTempVars(Location initialLocation, Location finalLocation)
 	{
-		System.out.println("inside checknothing inbetween");
-
-		boolean nothingInbetween = true;
-		int temp1 = 0;
-		int temp2 = 0;
-		
 		if(verticalMovement(initialLocation, finalLocation))
 		{
-			System.out.println("inside checknothing inbetween > vert");
 
 			if(initialLocation.getRow() < finalLocation.getRow())
 			{
@@ -134,6 +129,64 @@ public abstract class Piece
 				temp2 = initialLocation.getRow();
 				temp1 = finalLocation.getRow();
 			}
+		}
+		
+		else if(horizontalMovement(initialLocation, finalLocation))
+		{
+			if(initialLocation.getColumn() < finalLocation.getColumn())
+			{
+				temp1 = initialLocation.getColumn();
+				temp2 = finalLocation.getColumn();
+			}
+			else 
+			{
+				temp2 = initialLocation.getColumn();
+				temp1 = finalLocation.getColumn();
+			}
+		}
+		
+		else if(diagonalMovement(initialLocation, finalLocation))
+		{
+			if(initialLocation.getRow() < finalLocation.getRow() && initialLocation.getColumn() < finalLocation.getColumn())
+			{
+				temp1 = initialLocation.getRow();
+				temp2 = finalLocation.getRow();
+				temp3 = initialLocation.getColumn();
+				temp4 = 1;
+			}
+			else if (finalLocation.getRow() < initialLocation.getRow() && initialLocation.getColumn() < finalLocation.getColumn())
+			{
+				temp1 = finalLocation.getRow();
+				temp2 = initialLocation.getRow();
+				temp3 = finalLocation.getColumn();
+				temp4 = -1;
+			}
+			else if(finalLocation.getRow() < initialLocation.getRow() && finalLocation.getColumn() < initialLocation.getColumn())
+			{
+				temp1 = finalLocation.getRow();
+				temp2 = initialLocation.getRow();
+				temp3 = finalLocation.getColumn();
+				temp4 = 1;
+			}
+			else if(initialLocation.getRow() < finalLocation.getRow() && finalLocation.getColumn() < initialLocation.getColumn())
+			{
+				temp1 = initialLocation.getRow();
+				temp2 = finalLocation.getRow();
+				temp3 = initialLocation.getColumn();
+				temp4 = -1;
+			}
+		}
+		System.out.println("temp vars set");
+	}
+	
+	public boolean checkNothingInbetween(Location initialLocation, Location finalLocation, ChessBoard cb)
+	{
+		boolean nothingInbetween = true;
+		
+		setTempVars(initialLocation, finalLocation);
+		
+		if(verticalMovement(initialLocation, finalLocation))
+		{
 			for(int i = temp1 + 1; i < temp2; i++)
 			{
 				if(cb.board[i][initialLocation.getColumn()] != null)
@@ -145,18 +198,6 @@ public abstract class Piece
 		
 		else if(horizontalMovement(initialLocation, finalLocation))
 		{
-			System.out.println("inside checknothing inbetween > hori");
-
-			if(initialLocation.getColumn() < finalLocation.getColumn())
-			{
-				temp1 = initialLocation.getColumn();
-				temp2 = finalLocation.getColumn();
-			}
-			else 
-			{
-				temp2 = initialLocation.getColumn();
-				temp1 = finalLocation.getColumn();
-			}
 			for(int i = temp1 + 1; i < temp2; i++)
 			{
 				if(cb.board[initialLocation.getRow()][i] != null)
@@ -164,59 +205,25 @@ public abstract class Piece
 					nothingInbetween = false;
 				}
 			}
-			
 		}
 		
 		else if(diagonalMovement(initialLocation, finalLocation))
 		{
-			System.out.println("inside checknothing inbetween > diag");
-
-			int temp3 = 0;
-			int temp4 = 0;
+			int j = temp3;
 			
-			if(initialLocation.getRow() < finalLocation.getRow() && initialLocation.getColumn() < finalLocation.getColumn())
+			for(int i = temp1; i < temp2; i++)
 			{
-				temp1 = initialLocation.getColumn();
-				temp2 = finalLocation.getColumn();
-				temp3 = initialLocation.getRow();
-				temp4 = finalLocation.getRow();
-			}
-			else if (finalLocation.getRow() < initialLocation.getRow() && initialLocation.getColumn() < finalLocation.getColumn())
-			{
-				temp2 = initialLocation.getColumn();
-				temp1 = finalLocation.getColumn();
-				temp3 = initialLocation.getRow();
-				temp4 = finalLocation.getRow();
-			}
-			else if(finalLocation.getRow() < initialLocation.getRow() && finalLocation.getColumn() < initialLocation.getColumn())
-			{
-				temp2 = initialLocation.getColumn();
-				temp1 = finalLocation.getColumn();
-				temp4 = initialLocation.getRow();
-				temp3 = finalLocation.getRow();
-			}
-			else if(initialLocation.getRow() < finalLocation.getRow() && finalLocation.getColumn() < initialLocation.getColumn())
-			{
-				temp1 = initialLocation.getColumn();
-				temp2 = finalLocation.getColumn();
-				temp4 = initialLocation.getRow();
-				temp3 = finalLocation.getRow();
-			}
-			
-			for(int i = temp1 + 1; i < temp2; i++)
-			{
-				for(int j = temp3 + 1; j < temp4; j++) 
+				System.out.println("checking inbtween square: " + cb.board[i][j]);
+				if((cb.board[i][j] != null) && (i != initialLocation.getRow() && j != initialLocation.getColumn()) && (i != finalLocation.getRow() && j != finalLocation.getColumn()))
 				{
-					if(cb.board[i][j] != null)
-					{
-						nothingInbetween = false;
-					}
+					
+					return false;
 				}
+				j = j + temp4;
+
 			}
-			
 		}
-		
-		
+		System.out.println("nothingInbetween: " + nothingInbetween);	
 		return nothingInbetween;
 	}
 }

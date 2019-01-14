@@ -101,7 +101,7 @@ public class GameGUI implements ActionListener
 		do 
 		{
 			updateGameGui();
-		}while(!gm.checkForCheckMate());
+		}while(gm.gameNotOver);
 	}
 	
 	
@@ -297,24 +297,41 @@ public class GameGUI implements ActionListener
 	{
 		if(isFirstClick)
 		{
-			pieceToMove = gm.getPiece(row, col, cb);
+			System.out.println("inside first click. player: " + gm.player);
+			//System.out.println("row of pieceToMove: " + row);
+			//System.out.println("col of pieceToMove: " + col);
+			if(cb.board[row][col] == null)
+			{
+				System.out.println("Please choose a square with a piece");
+				return;
+			}
+			pieceToMove = cb.board[row][col];
+			System.out.println("fristclick pieceToMove: " + pieceToMove);
 			initLocation = new Location(row, col);
+			System.out.println("fristclick initLocation: " + initLocation);
+
 			if(!gm.isPiecePlayersColour(pieceToMove))
 			{
 				System.out.println("You cannot move your opponent's piece");
 				//TODO make an exception for this event??
 				return;
 			}
+			
+			System.out.println("fristclick got past the if statement");
+
 			chessBoardSquares[row][col].setBackground(LIGHT_BLUE);
 			isFirstClick = false;
 		}
 		else
 		{
+			System.out.println("inside second click");
+
 			Location finalLocation = new Location(row, col);
 			
 			if(pieceToMove.validPieceMovement(initLocation, finalLocation, cb))
 			{
-				Piece pieceOnDestination = gm.getPiece(row, col, cb);
+				System.out.println("MOVEMENT CONFIRMED. now to see if pieceOnDestination is null");
+				Piece pieceOnDestination = cb.board[row][col];
 
 				//check square to move to is empty
 				if(pieceOnDestination == null)
@@ -332,12 +349,13 @@ public class GameGUI implements ActionListener
 					{
 						gm.capturePiece(pieceOnDestination, cb);
 						gm.movePiece(initLocation, finalLocation, cb, pieceToMove);
+						//TODO decide what to do if comes back as check
 					}
 				}
 			}
 			else
 			{
-				System.out.println("That move is not allowed");
+				System.out.println("That move is not allowed, not valid movement");
 				//TODO do something else?
 			}
 			
@@ -351,6 +369,9 @@ public class GameGUI implements ActionListener
             {
             	chessBoardSquares[initLocation.getRow()][initLocation.getColumn()].setBackground(GREEN);
             }     
+			
+			System.out.println("got to end of second click");
+
 			
 			isFirstClick = true;
 		}

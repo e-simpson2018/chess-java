@@ -12,18 +12,13 @@ public class Pawn extends Piece
 			super.pieceId = 7;				
 	}
 	
-	//protected boolean validPieceMovement(Location initialLocation, Location finalLocation)
-	//{
-		//return true;
-	//}
-
-	
 	//TODO CHECK ALL THE OVERRIDES THAT THYE ARE, IN FACT OVERRIDES
 	@Override
 	protected boolean validPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb) 
 	{
-		System.out.println("inside movement pawn");
 		boolean isValid = false;
+		
+		System.out.println("inside pawn movement");
 		
 		if(firstMove(initialLocation, finalLocation, cb) ||
 			normalMove(initialLocation, finalLocation, cb)	||
@@ -31,13 +26,12 @@ public class Pawn extends Piece
 		{
 			isValid = true;
 		}
-
 		//TODO SOMETHING ELSE ABOUT PROMOTING PIECE?
 		return isValid;
 	}
 	
 	
-	/*
+	/**
 	 * firstMove() allows for the following conditions:
 	 * If it's a black piece on the starting row, it can move either one or two rows forward
 	 * Same for white, but in the opposite direction
@@ -47,9 +41,7 @@ public class Pawn extends Piece
 	 */
 	private boolean firstMove(Location initialLocation, Location finalLocation, ChessBoard cb)
 	{
-		System.out.println("inside firstMove pawn");
 		boolean flag1 = false;
-		
 		if(noHorizontalMovement(initialLocation, finalLocation) && isEmptySquare(initialLocation, finalLocation, cb))
 		{
 			if(this.getColour() == Piece.Colour.WHITE)
@@ -68,7 +60,7 @@ public class Pawn extends Piece
 				}
 			}
 		}
-		System.out.println("result of firstMove pawn :" + flag1);
+		System.out.println(" pawn first move comes back: " + flag1);
 		return flag1;
 	}
 	
@@ -82,7 +74,7 @@ public class Pawn extends Piece
 		return (cb.board[finalLocation.getRow()][finalLocation.getColumn()] == null);
 	}
 	
-	/*
+	/**
 	 * normalMove() allows for the following conditions:
 	 * If it's a black piece after the starting row and before the end row, it can move one row forward
 	 * Same for white, but in the opposite direction
@@ -92,8 +84,6 @@ public class Pawn extends Piece
 	 */
 	private boolean normalMove(Location initialLocation, Location finalLocation, ChessBoard cb)
 	{
-		System.out.println("inside normalMove pawn");
-
 		boolean flag2 = false;
 		
 		if(noHorizontalMovement(initialLocation, finalLocation) && isEmptySquare(initialLocation, finalLocation, cb))
@@ -114,12 +104,12 @@ public class Pawn extends Piece
 				}
 			}
 		}
-		System.out.println("result of normalMove pawn :" + flag2);
+		System.out.println("pawn normal move comes back: " + flag2);
 		return flag2;
 
 	}
 	
-	/*
+	/**
 	 * captureMove() allows for the following conditions:
 	 * If it's a black piece, it can move forward diagonally by one row
 	 * Same for white, but in the opposite direction
@@ -127,11 +117,8 @@ public class Pawn extends Piece
 	 * TODO NEED TO DECIDE WHETHER TO PASS PIECE INSTEAD OF USING CB AND CHECK FOR PAWN PROMOTION
 	 */
 	private boolean captureMove(Location initialLocation, Location finalLocation, ChessBoard cb)
-	{
-		System.out.println("inside captureMove pawn");
-		
+	{		
 		boolean flag3 = false;
-		
 		if(diagonalMovement(initialLocation, finalLocation) && !isEmptySquare(initialLocation, finalLocation, cb))
 		{
 			if(this.getColour() == Piece.Colour.WHITE && (initialLocation.getRow() - finalLocation.getRow() == 1))
@@ -150,7 +137,7 @@ public class Pawn extends Piece
 				}
 			}
 		}
-		System.out.println("result of captureMove pawn :" + flag3);
+		System.out.println("pawn capture movement comes back: " + flag3);
 		return flag3;
 	
 	}

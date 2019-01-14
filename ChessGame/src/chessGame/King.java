@@ -23,6 +23,7 @@ public class King extends Piece
 	@Override
 	protected boolean validPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb) 
 	{
+		System.out.println("inside king movement");
 		boolean isValidMove = false;
 		
 		if(kingVertical(initialLocation, finalLocation) ||
