@@ -1,36 +1,27 @@
 package chessGame;
 
+import chessGame.Piece.Colour;
+
 public class Bishop extends Piece
 {	
-	
+	//Constructor
 	public Bishop(Colour newColour) 
 	{
-		super(newColour);
-		super.pieceType = "bishop";
-		
-		if (newColour ==  Piece.Colour.WHITE)		
-			super.pieceId = 2;		
-		else		
-			super.pieceId = 1;
+		super(newColour, new DynamicDiagonalValidator(), init(newColour));
 	}
+	
+	//Set pieceId to pass to super constructor
+	public static int init(Colour newColour)
+	{
+		if (newColour ==  Piece.Colour.WHITE)		
+			return 2;		
+		else		
+			return 1;
+	}
+	
+	//runMoveValidator(Location initialLocation, Location finalLocation) is taken care of in DynamicDiagonalValidator
 	
 	@Override
-	protected boolean validPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb) 
-	{
-		System.out.println("inside bishop validMovement");
-		boolean isValidMove = false;
-		
-		if(diagonalMovement(initialLocation, finalLocation))
-		{
-		
-			if(checkNothingInbetween(initialLocation, finalLocation, cb))
-			{
-				isValidMove = true;
-			}
-		}
-		return isValidMove;
-	}
-	
 	public String toString() 
 	{ 
 		//TODO UPDATE

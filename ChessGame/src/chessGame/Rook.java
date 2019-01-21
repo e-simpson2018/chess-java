@@ -1,34 +1,26 @@
 package chessGame;
 
+import chessGame.Piece.Colour;
+
 public class Rook extends Piece
 {	
 	public Rook(Colour newColour) 
 	{
-		super(newColour);
-		super.pieceType = "rook";
-		
-		if (newColour ==  Piece.Colour.WHITE)		
-			super.pieceId = 12;		
-		else		
-			super.pieceId = 11;
+		super(newColour, new DynamicStraightValidator(), init(newColour));
 	}	
-
-	@Override
-	protected boolean validPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb) 
-	{
-		boolean isValidMove = false;
-		
-		if(verticalMovement(initialLocation, finalLocation) ||
-			horizontalMovement(initialLocation, finalLocation))
-		{
-			if(checkNothingInbetween(initialLocation, finalLocation, cb))
-			{
-				isValidMove = true;
-			}
-		}
-		return isValidMove;
-	}
 	
+	//Set pieceId to pass to super constructor
+	public static int init(Colour newColour)
+	{
+		if (newColour ==  Piece.Colour.WHITE)		
+			return 12;		
+		else		
+			return 11;
+	}
+
+	//runMoveValidator(Location initialLocation, Location finalLocation) taken care of in DynamicStraightValidator
+	
+	@Override
 	public String toString() 
 	{ 
 		//TODO UPDATE

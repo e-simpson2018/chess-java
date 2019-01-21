@@ -2,22 +2,35 @@ package chessGame;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import chessGame.Piece.Colour;
 
 public class GameManager 
 {	
-	//TODO only public for testing
-	public String player = "white";
-	public boolean gameNotOver = true;
+	//TODO only static for testing - had trouble accessing from PawnValidator
+	public static String player;
+	public boolean gameNotOver;
 
+	//Constructor
+	public GameManager()
+	{
+		player = "white";
+		gameNotOver = true;
+	}
+	
+	//Getter
+	public String getPlayer()
+	{
+		return player;
+	}
+	
+	
 	/**
 	 * changePlayer is invoked after each successful move and changes the colour (and player)
 	 */
 	private void changePlayer()
 	{
-		if(player == "white")
+		if(player.equals("white"))
 		{
 			player = "black";
 		}
@@ -32,17 +45,16 @@ public class GameManager
 	 * it is added to the colour-appropriate list of captured pieces
 	 * 
 	 * @param capturedPiece the piece that is being captured
-	 * @param cb the ChessBoard holds the lists of captured pieces
 	 */
-	public void capturePiece(Piece capturedPiece, ChessBoard cb)
+	public void capturePiece(Piece capturedPiece)
 	{
 		if(capturedPiece.getColour()==Colour.WHITE)
 		{
-			cb.capturedWhite.add(capturedPiece);
+			ChessBoard.capturedWhite.add(capturedPiece);
 		}
 		else
 		{
-			cb.capturedBlack.add(capturedPiece);
+			ChessBoard.capturedBlack.add(capturedPiece);
 		}
 		System.out.println("You have taken a piece");
 	}
@@ -64,18 +76,21 @@ public class GameManager
 	 * 
 	 * @param initialPosition location of the piece to move
 	 * @param pieceDestination destination of the piece
-	 * @param cb ChessBoard holds all the pieces and locations on the board at that moment
 	 * @param pieceToMove the piece to move
+	 * @param cb used to get location of a piece
 	 */
-	public void movePiece(Location initialPosition, Location pieceDestination, ChessBoard cb, Piece pieceToMove)
+	public void movePiece(Location initialPosition, Location pieceDestination, Piece pieceToMove, ChessBoard cb)
 	{
 		if(pieceToMove != null)
 		{
+			//TODO CHECK THIS METHOD WORKS : SOMETIMES IT SAYS A PIECE HAS MOVED, BUT IT IS STILL VISIBLE ON THE BOARD
 			System.out.println("movePiece: " + pieceToMove);
 			//Add piece to new location and delete from old location
-			cb.board[pieceDestination.getRow()][pieceDestination.getColumn()] = pieceToMove;
-			cb.board[initialPosition.getRow()][initialPosition.getColumn()] = null;
-			System.out.println("PIECE WAS MOVED");
+			ChessBoard.board[pieceDestination.getRow()][pieceDestination.getColumn()] = pieceToMove;
+			ChessBoard.board[initialPosition.getRow()][initialPosition.getColumn()] = null;
+			//System.out.println("destination should hold the new piece: " + (ChessBoard.board[pieceDestination.getRow()][pieceDestination.getColumn()]).toString());
+			//System.out.println("orig square should now be null: " + ChessBoard.board[initialPosition.getRow()][initialPosition.getColumn()]);
+			//System.out.println("PIECE WAS MOVED");
 			afterMoveChecks(pieceDestination, pieceToMove, cb);
 		}
 		else
@@ -91,7 +106,7 @@ public class GameManager
 	 * 
 	 * @param pieceJustMovedLocation location of the last piece moved
 	 * @param pieceJustMoved last piece moved
-	 * @param cb ChessBoard holds all the pieces and locations on the board at that moment
+	 * @param cb used to get location of a piece
 	 */
 	private void afterMoveChecks(Location pieceJustMovedLocation, Piece pieceJustMoved, ChessBoard cb)
 	{
@@ -116,27 +131,26 @@ public class GameManager
 	 * getOpponentsKingLocation checks the player's colour, loops through the board looking for the opponent's king,
 	 * and returns its location
 	 * 
-	 * @param cb ChessBoard holds all the pieces and locations on the board at that moment
 	 * @return location of the opponent's king
 	 */
-	//TODO refactor
-	private Location getOpponentsKingLocation(ChessBoard cb)
+	private Location getOpponentsKingLocation()
 	{
-		//System.out.println("inside getOpponentsKingLocation");
 		Location opponentsKingLocation = null;
 		
-		for(int i = 0; i < cb.CHESSBOARD_LENGTH; i++)
+		for(int i = 0; i < ChessBoard.CHESSBOARD_LENGTH; i++)
 		{
-			for(int j = 0; j < cb.CHESSBOARD_WIDTH; j++)
+			for(int j = 0; j < ChessBoard.CHESSBOARD_WIDTH; j++)
 			{
-				if(cb.board[i][j] != null)
+				if(ChessBoard.board[i][j] != null)
 				{
-					if(cb.board[i][j].getPieceId() == 4 && player == "black")
+					//4 is the id of the white king
+					if(ChessBoard.board[i][j].getPieceId() == 4 && player.equals("black"))
 					{
 						opponentsKingLocation = new Location(i, j);
 						return opponentsKingLocation;
 					}
-					else if(cb.board[i][j].getPieceId() == 3 && player == "white")
+					//3 is the id of the black king
+					else if(ChessBoard.board[i][j].getPieceId() == 3 && player.equals("white"))
 					{
 						opponentsKingLocation = new Location(i, j);
 						return opponentsKingLocation;
@@ -144,7 +158,6 @@ public class GameManager
 				}
 			}
 		}	
-		//System.out.println("opponentsKingLocation: " + opponentsKingLocation);
 		return opponentsKingLocation;
 	}
 	
@@ -153,21 +166,19 @@ public class GameManager
 	 * checkForCheck is invoked after every successful move, and checks if a player is in check
 	 * 
 	 * @param pieceJustMoved the piece that was moved last
-	 * @param cb ChessBoard holds all the pieces and locations on the board at that moment
+	 * @param cb cb used to get location of a piece
 	 * @return true if check has been achieved
 	 */
 	//TODO could also put a piece in check by a piece moving away and exposing a dangerous path of another piece. Check!
 	public boolean checkForCheck(Piece pieceJustMoved, ChessBoard cb)
 	{
 		System.out.println("checking for check");
-		//TODO check if need to change this method and just check if any of the pieces put in check !! (pretty sure I do!!)
 		boolean inCheck = false; //flag for check
 
-		Location opponentsKingLocation = getOpponentsKingLocation(cb);
+		Location opponentsKingLocation = getOpponentsKingLocation();
 
-		//TODO should pass the actual location to not loop through with getLocation
 		//If pieceJustMoved can reach the opponent's king in its next move, it is in check 
-		if(pieceJustMoved.validPieceMovement(cb.getLocation(pieceJustMoved), opponentsKingLocation, cb))
+		if(pieceJustMoved.runMoveValidator(cb.getLocation(pieceJustMoved), opponentsKingLocation))
 		{
 			inCheck = true;
 		}
@@ -178,10 +189,10 @@ public class GameManager
 	/**
 	 * checkForCheckMate is invoked if a player is in check, and checks for checkmate
 	 * 1) by looking at the squares surrounding the king to see if it can move out of danger itself
-	 * 2) by checking if another piece can move in between the king and piece putting it in check
+	 * 2) by checking if another piece can move in between the king and piece  that's putting it in check
 	 * 
 	 * @param pieceJustMoved the piece that was moved last
-	 * @param cb ChessBoard holds all the pieces and locations on the board at that moment
+	 * @param cb cb used to get location of a piece
 	 * @return true if checkmate has been achieved
 	 */
 	//TODO also need to check if another piece can take the piece putting king in check
@@ -189,19 +200,15 @@ public class GameManager
 	{
 		System.out.println("inside checkMATE");
 		boolean inCheckMate = false; //flag for checkmate
-		//TODO Should it be an arraylist instead?
 		//Holds viable spaces for the king to move and will later check if each one is safe
-		Location[] kingEscapeSquares = new Location[8];
-		//TODO check if I can link the 2 methods in stead of having to loop through for the 
-		// location again
-		Location opponentsKingLocation = getOpponentsKingLocation(cb);
+		List<Location> kingEscapeSquares = new ArrayList<Location>();
+		Location opponentsKingLocation = getOpponentsKingLocation();
 		
 		//check if king can move out of danger itself
-		if(squareSurroundingKingOpen(opponentsKingLocation, cb, kingEscapeSquares))
+		if(squareSurroundingKingOpen(opponentsKingLocation, kingEscapeSquares))
 		{
-			//System.out.println("SQUARESURROUNDINGKING CAME BACK TRUE");
 			//Check if the potential king move is free from danger from other pieces
-			if(!secondaryCheckKingOutOfDanger(opponentsKingLocation, cb, kingEscapeSquares))
+			if(!secondaryCheckKingOutOfDanger(opponentsKingLocation, kingEscapeSquares))
 			{
 				inCheckMate = true;
 			}
@@ -212,14 +219,8 @@ public class GameManager
 			if(otherPieceCanSaveKing(pieceJustMoved, opponentsKingLocation, cb))
 			{
 				inCheckMate = false;
-				System.out.println("inCheckMate final : " + inCheckMate);
-				
 			}
 		}
-		System.out.println("inCheckMate initial : " + inCheckMate);
-
-		//check if other pieces can save king
-
 		return inCheckMate;
 	}
 	
@@ -230,192 +231,120 @@ public class GameManager
 	 * if any of them are available to be moved into. If they are, they are added to a list.
 	 * 
 	 * @param kingsLocation the location of the king-in-check
-	 * @param cb ChessBoard holds all the pieces and locations on the board at that moment
 	 * @param kingEscapeSquares holds the possible moves the king can make to move out of check
 	 * @return true if there is a potential square to move the king out of danger
 	 */
-	//TODO redo this method!!!!!
-	private boolean squareSurroundingKingOpen(Location kingsLocation, ChessBoard cb, Location[] kingEscapeSquares)
+	//TODO need to test!!!!!!
+	private boolean squareSurroundingKingOpen(Location kingsLocation, List<Location> kingEscapeSquares)
 	{
-		System.out.println("inside squareSurroundingKingOpen");
-		boolean kingCanMove = false; 
 		int kr = kingsLocation.getRow();
 		int kc = kingsLocation.getColumn();
+		//array of flags for squares surrounding king: [kr + 1][kc], [kr][kc + 1], [kr - 1][kc], [kr][kc - 1], 
+		//[kr + 1][kc + 1], [kr - 1][kc - 1], [kr + 1][kc - 1], [kr - 1][kc + 1]
+		boolean[] squaresAreOnBoard = {true, true, true, true, true, true, true, true};
 		
-		//System.out.println("kingsLocation.getRow(): " + kingsLocation.getRow());
-		//System.out.println("kingsLocation.getColumn(): " + kingsLocation.getColumn());
-		
-		Piece kingRight = null;
-		Piece kingUp = null;
-		Piece kingLeft = null;
-		Piece kingDown = null;
-		Piece kingUpRight = null;
-		Piece kingDownLeft = null;
-		Piece kingRightDown = null;
-		Piece kingLeftUp = null;
-		
-		//TODO need to take into account if the king is in a corner
-		if((kingsLocation.getRow() <= 6 && kingsLocation.getRow() >= 1) && (kingsLocation.getColumn() <= 6 && kingsLocation.getColumn() >= 1))
+		//all the cases that will change flag to false (edge cases that are off the board)
+		if(kr == 7)
 		{
-			int index = 0;
-			kingRight = cb.board[kr + 1][kc];
-			kingCanMove = addToKingEscapeSquares(kingRight, kingEscapeSquares, (kr + 1), kc, index);
-			index++;
-			kingUp = cb.board[kr][kc + 1];
-			kingCanMove = addToKingEscapeSquares(kingUp, kingEscapeSquares, kr, (kc + 1), index);
-			index++;
-			kingLeft = cb.board[kr - 1][kc];
-			kingCanMove = addToKingEscapeSquares(kingLeft, kingEscapeSquares, (kr - 1), kc, index);
-			index++;
-			kingDown = cb.board[kr][kc - 1];
-			kingCanMove = addToKingEscapeSquares(kingDown, kingEscapeSquares, kr, (kc - 1), index);
-			index++;
-			kingUpRight = cb.board[kr + 1][kc + 1];
-			kingCanMove = addToKingEscapeSquares(kingUpRight, kingEscapeSquares, (kr + 1), (kc + 1), index);
-			index++;
-			kingDownLeft = cb.board[kr - 1][kc - 1];
-			kingCanMove = addToKingEscapeSquares(kingDownLeft, kingEscapeSquares, (kr - 1), (kc - 1), index);
-			index++;
-			kingRightDown = cb.board[kr + 1][kc - 1];
-			kingCanMove = addToKingEscapeSquares(kingRightDown, kingEscapeSquares, (kr + 1), (kc - 1), index);
-			index++;
-			kingLeftUp = cb.board[kr - 1][kc + 1];
-			kingCanMove = addToKingEscapeSquares(kingLeftUp, kingEscapeSquares, (kr - 1), (kc + 1), index);
+			squaresAreOnBoard[0] = false; //square below king - [kr + 1][kc]
+			squaresAreOnBoard[4] = false; //square bottom right of king - [kr + 1][kc + 1]
+			squaresAreOnBoard[6] = false; //square bottom left of square - [kr + 1][kc - 1]
 			
-		}
-		else if(kingsLocation.getRow() == 7)
+			setFlagsForEscapeSquaresColumns(squaresAreOnBoard, kc);
+		}	
+		else if(kr == 0)
 		{
-			int index = 0;
-			kingUp = cb.board[kr][kc + 1];
-			kingCanMove = addToKingEscapeSquares(kingUp, kingEscapeSquares, kr, (kc + 1), index);
-			index++;
-			kingLeft = cb.board[kr - 1][kc];
-			kingCanMove = addToKingEscapeSquares(kingLeft, kingEscapeSquares, (kr - 1), kc, index);
-			index++;
-			kingDown = cb.board[kr][kc - 1];
-			kingCanMove = addToKingEscapeSquares(kingDown, kingEscapeSquares, kr, (kc - 1), index);
-			index++;
-			kingDownLeft = cb.board[kr - 1][kc - 1];
-			kingCanMove = addToKingEscapeSquares(kingDownLeft, kingEscapeSquares, (kr - 1), (kc - 1), index);
-			index++;
-			kingLeftUp = cb.board[kr - 1][kc + 1];
-			kingCanMove = addToKingEscapeSquares(kingLeftUp, kingEscapeSquares, (kr - 1), (kc + 1), index);
+			squaresAreOnBoard[2] = false; //square above king - [kr - 1][kc]
+			squaresAreOnBoard[5] = false; //square top left of king - [kr - 1][kc - 1]
+			squaresAreOnBoard[7] = false; //square top right of king - [kr - 1][kc + 1]
+			
+			setFlagsForEscapeSquaresColumns(squaresAreOnBoard, kc);
 		}
-		else if(kingsLocation.getRow() == 0)
+		else
 		{
-			int index = 0;
-			kingRight = cb.board[kr + 1][kc];
-			kingCanMove = addToKingEscapeSquares(kingRight, kingEscapeSquares, (kr + 1), kc, index);
-			index++;
-			kingUp = cb.board[kr][kc + 1];
-			kingCanMove = addToKingEscapeSquares(kingUp, kingEscapeSquares, kr, (kc + 1), index);
-			index++;
-			kingDown = cb.board[kr][kc - 1];
-			kingCanMove = addToKingEscapeSquares(kingDown, kingEscapeSquares, kr, (kc - 1), index);
-			index++;
-			kingUpRight = cb.board[kr + 1][kc + 1];
-			kingCanMove = addToKingEscapeSquares(kingUpRight, kingEscapeSquares, (kr + 1), (kc + 1), index);
-			index++;
-			kingRightDown = cb.board[kr + 1][kc - 1];
-			kingCanMove = addToKingEscapeSquares(kingRightDown, kingEscapeSquares, (kr + 1), (kc - 1), index);
+			setFlagsForEscapeSquaresColumns(squaresAreOnBoard, kc);
+		}
 
-		}
-		else if(kingsLocation.getColumn() == 7)
-		{
-			int index = 0;
-			kingRight = cb.board[kr + 1][kc];
-			kingCanMove = addToKingEscapeSquares(kingRight, kingEscapeSquares, (kr + 1), kc, index);
-			index++;
-			kingLeft = cb.board[kr - 1][kc];
-			kingCanMove = addToKingEscapeSquares(kingLeft, kingEscapeSquares, (kr - 1), kc, index);
-			index++;
-			kingDown = cb.board[kr][kc - 1];
-			kingCanMove = addToKingEscapeSquares(kingDown, kingEscapeSquares, kr, (kc - 1), index);
-			index++;
-			kingDownLeft = cb.board[kr - 1][kc - 1];
-			kingCanMove = addToKingEscapeSquares(kingDownLeft, kingEscapeSquares, (kr - 1), (kc - 1), index);
-			index++;
-			kingRightDown = cb.board[kr + 1][kc - 1];
-			kingCanMove = addToKingEscapeSquares(kingRightDown, kingEscapeSquares, (kr + 1), (kc - 1), index);
-
-		}
-		else if(kingsLocation.getColumn() == 0)
-		{
-			int index = 0;
-			kingRight = cb.board[kr + 1][kc];
-			kingCanMove = addToKingEscapeSquares(kingRight, kingEscapeSquares, (kr + 1), kc, index);
-			index++;
-			kingUp = cb.board[kr][kc + 1];
-			kingCanMove = addToKingEscapeSquares(kingUp, kingEscapeSquares, kr, (kc + 1), index);
-			index++;
-			kingLeft = cb.board[kr - 1][kc];
-			kingCanMove = addToKingEscapeSquares(kingLeft, kingEscapeSquares, (kr - 1), kc, index);
-			index++;
-			kingUpRight = cb.board[kr + 1][kc + 1];
-			kingCanMove = addToKingEscapeSquares(kingUpRight, kingEscapeSquares, (kr + 1), (kc + 1), index);
-			index++;
-			kingLeftUp = cb.board[kr - 1][kc + 1];
-			kingCanMove = addToKingEscapeSquares(kingLeftUp, kingEscapeSquares, (kr - 1), (kc + 1), index);
-		}
-		
-		return kingCanMove;
+		addEscapeSquareToList((kr + 1), kc, kingEscapeSquares, squaresAreOnBoard[0]); //square below king - [kr + 1][kc]
+		addEscapeSquareToList(kr, kc + 1, kingEscapeSquares, squaresAreOnBoard[1]); //square right of king - [kr][kc + 1]
+		addEscapeSquareToList(kr - 1, kc, kingEscapeSquares, squaresAreOnBoard[2]); //square above king - [kr - 1][kc]
+		addEscapeSquareToList(kr, kc - 1, kingEscapeSquares, squaresAreOnBoard[3]); //square left of king - [kr][kc - 1]
+		addEscapeSquareToList(kr + 1, kc + 1, kingEscapeSquares, squaresAreOnBoard[4]); //square bottom right of king - [kr + 1][kc + 1]
+		addEscapeSquareToList(kr - 1, kc - 1, kingEscapeSquares, squaresAreOnBoard[5]); //square top left of king - [kr - 1][kc - 1]
+		addEscapeSquareToList(kr + 1, kc - 1, kingEscapeSquares, squaresAreOnBoard[6]); //square bottom left of square - [kr + 1][kc - 1]
+		addEscapeSquareToList(kr - 1, kc + 1, kingEscapeSquares, squaresAreOnBoard[7]); //square top right of king - [kr - 1][kc + 1]
+					
+		return !(kingEscapeSquares.isEmpty());
 	}
-	
 	
 	/**
-	 * addToKingEscapeSquares is called from squareSurroundingKingOpen(). It adds a possible kingEscapeSquare to an array.
-	 * 
-	 * @param newSquare the location of a possible safe move for the king-in-check
-	 * @param kingEscapeSquares holds the possible moves the king can make to move out of check
-	 * @param kr the king's row
-	 * @param kc the king's column
-	 * @return true if location successfully added to the array
+	 * This method is called from squareSurroundingKingOpen() and checks the square being passed is on the board (validSquare)
+	 * and then checks if the square is a possible safe move for the king-in-check, and adds to the arrayList
 	 */
-	//TODO check if it should return void in stead of boolean
-	private boolean addToKingEscapeSquares(Piece newSquarePiece, Location[] kingEscapeSquares, int kr, int kc, int index)
+	public void addEscapeSquareToList(int row, int col, List<Location> kingEscapeSquares, boolean validSquare)
 	{
-		//A square is possible a safe move for the king if it is null, or the piece already there is the opposite colour
-		if((newSquarePiece == null) || (newSquarePiece != null && newSquarePiece.getColour().getPrintColourAsString() == player))
+		if(validSquare)
 		{
-			Location possibleMovement = new Location(kr, kc);
-			kingEscapeSquares[index] = possibleMovement;
-			return true;
+			Piece newSquarePiece = ChessBoard.board[row][col];
+			//A square is a possible safe move for the king if the piece is null, or the piece already there is the opposite colour
+			if((newSquarePiece == null) || (newSquarePiece != null && newSquarePiece.getColour().getPrintColourAsString().equals(player)))
+			{
+				Location possibleMovement = new Location(row, col);
+				kingEscapeSquares.add(possibleMovement);
+			}
 		}
-		return false;
+	}
+	
+	/**
+	 * setFlagsForEscapeSquaresColumns is called from squareSurroundingKingOpen() to invalidate squares that are off the board
+	 * from columns
+	 */
+	public void setFlagsForEscapeSquaresColumns(boolean[] flagsIfValidSquare, int col)
+	{
+		if(col == 7)
+		{
+			flagsIfValidSquare[1] = false; //square right of king - [kr][col + 1]
+			flagsIfValidSquare[4] = false; //square bottom right of king - [kr + 1][col + 1]
+			flagsIfValidSquare[7] = false; //square top right of king - [kr - 1][col + 1]
+		}
+		else if(col == 0)
+		{
+			flagsIfValidSquare[3] = false; //square left of king - [kr][col - 1]
+			flagsIfValidSquare[5] = false; //square top left of king - [kr - 1][col - 1]
+			flagsIfValidSquare[6] = false; //square bottom left of square - [kr + 1][col - 1]
+		}
 	}
 	
 	
+		
 	/**
 	 * secondaryCheckKingOutOfDanger is called from checkForCheckMate(). It takes each of the squares that is a potential safe move 
 	 * for the king-in-check, and then looks to see if it will be in the path of another opponent piece 
 	 * 
 	 * @param opponentsKingLocation the location of the king-in-check
-	 * @param cb ChessBoard holds all the pieces and locations on the board at that moment
 	 * @param kingEscapeSquares holds all the possible king movements
 	 * @return true if the king has a safe option within his possible movements
 	 */
-	private boolean secondaryCheckKingOutOfDanger(Location opponentsKingLocation, ChessBoard cb, Location[] kingEscapeSquares)
+	private boolean secondaryCheckKingOutOfDanger(Location opponentsKingLocation, List<Location> kingEscapeSquares)
 	{
-		System.out.println("inside secondaryCheckKingOutOfDanger");
-		for(int i = 0; i < kingEscapeSquares.length; i++)
+		for(int i = 0; i < kingEscapeSquares.size(); i++)
 		{
-			if(kingEscapeSquares[i] != null)
+			//TODO NEED THIS? I already check for null before I save them to the arrayList
+			if(kingEscapeSquares.get(i) != null)
 			{
-				//TODO make a method for this so I can use in the method checking inbetween spaces for checkmate
-				for(int j = 0; j < cb.CHESSBOARD_LENGTH; j++)
+				for(int j = 0; j < ChessBoard.CHESSBOARD_LENGTH; j++)
 				{
-					for(int k = 0; k < cb.CHESSBOARD_WIDTH; k++)
+					for(int k = 0; k < ChessBoard.CHESSBOARD_WIDTH; k++)
 					{
 						//If there is a piece on the square and it is the player's colour, check if it can reach the kingEscapeSquare
-						if(cb.board[j][k] != null && cb.board[j][k].getColour().getPrintColourAsString() == player)
+						if(ChessBoard.board[j][k] != null && player.equals(ChessBoard.board[j][k].getColour().getPrintColourAsString()))
 						{
 							Location pieceLocation = new Location(j, k);
-							if(!cb.board[j][k].validPieceMovement(pieceLocation, kingEscapeSquares[i], cb))
+							if(!ChessBoard.board[j][k].runMoveValidator(pieceLocation, kingEscapeSquares.get(i)))
 							{
 								System.out.println("a kingEscapeSquare is free");
 								return true;
 							}
-							
 						}
 					}
 				}
@@ -433,13 +362,12 @@ public class GameManager
 	 * 
 	 * @param pieceEndangeringKing the piece that is putting the king in check
 	 * @param opponentsKingLocation location of the king in danger
-	 * @param cb ChessBoard holds all the pieces and locations on the board at that moment
+	 * @param cb used to get location of a piece
 	 * @return true if the king can be saved by another of the opponent's pieces
 	 */
 	private boolean otherPieceCanSaveKing(Piece pieceEndangeringKing, Location opponentsKingLocation, ChessBoard cb)
 	{
-		boolean canSaveKing = false; //flag indicating if the king can be saved
-		//TODO Get the location in check original method and pass it to all the subsequent methods??
+		boolean canSaveKing = false; //flag
 		Location pieceEndangeringKingLocation = cb.getLocation(pieceEndangeringKing);
 		
 		//Knights and pawns on a normal move can not be intercepted
@@ -449,21 +377,22 @@ public class GameManager
 		}
 		else if(pieceEndangeringKing instanceof Rook)
 		{
-			if(checkForInterveningPieces(pieceEndangeringKingLocation, opponentsKingLocation, pieceEndangeringKing, cb))
+			//TODO CAST TO THEIR SPECIFIC INSTANCES!!!!!!
+			if(checkForInterveningPieces(pieceEndangeringKingLocation, opponentsKingLocation, pieceEndangeringKing))
 			{
 				canSaveKing = true;
 			}
 		}
 		else if(pieceEndangeringKing instanceof Bishop)
 		{
-			if(checkForInterveningPieces(pieceEndangeringKingLocation, opponentsKingLocation, pieceEndangeringKing, cb))
+			if(checkForInterveningPieces(pieceEndangeringKingLocation, opponentsKingLocation, pieceEndangeringKing))
 			{
 				canSaveKing = true;
 			}
 		}
 		else if(pieceEndangeringKing instanceof Queen)
 		{
-			if(checkForInterveningPieces(pieceEndangeringKingLocation, opponentsKingLocation, pieceEndangeringKing, cb))
+			if(checkForInterveningPieces(pieceEndangeringKingLocation, opponentsKingLocation, pieceEndangeringKing))
 			{
 				canSaveKing = true;
 			}
@@ -471,104 +400,53 @@ public class GameManager
 		return canSaveKing;
 	}
 	
-	
 	/**
-	 * checkForInterveningPieces is called from otherPieceCanSaveKing(). It loops though the squares in between 
-	 * pieceEndangeringKing and the king-in-check, and sees if another of the opponents' pieces can intervene to save the king 
-	 * 
-	 * @param pieceEndangeringKingLocation the location of the piece that is putting the king in check
-	 * @param opponentsKingLocation the location of the king-in-check
-	 * @param pieceEndangeringKing the piece that is putting the king in check
-	 * @param cb ChessBoard holds all the pieces and locations on the board at that moment
-	 * @return true if another piece can intervene in the check
+	 * checkForInterveningPieces is called from otherPieceCanSaveKing() and does the actual looping through all the pieces
 	 */
-	//TODO get rid of piece? Just added to access the methods inside here
-	public boolean checkForInterveningPieces(Location pieceEndangeringKingLocation, Location opponentsKingLocation, Piece pieceEndangeringKing, ChessBoard cb)
+	public boolean checkForInterveningPieces(Location pieceEndangeringKingLocation, Location opponentsKingLocation, Piece pieceEndangeringKing)
 	{
 		boolean pieceCanIntervene = false; //flag indicating if piece can intervene
 		Location inbetweenSquare = null;
 		
-		//set up temporary variables that change depending if the rows or columns are negative or positive
-		pieceEndangeringKing.setTempVars(pieceEndangeringKingLocation, opponentsKingLocation);
+		//set up temporary variables that change depending if the rows or columns are negative or positive. Returns the shape of move
+		String moveShape = pieceEndangeringKing.setTempVars(pieceEndangeringKingLocation, opponentsKingLocation);
 		
-		if(pieceEndangeringKing.verticalMovement(pieceEndangeringKingLocation, opponentsKingLocation))
+		int j = pieceEndangeringKing.temp3;
+		for(int i = pieceEndangeringKing.temp1 ; i < pieceEndangeringKing.temp2; i++)
 		{
-			for(int i = pieceEndangeringKing.temp1 ; i < pieceEndangeringKing.temp2; i++)
+			for(int k = 0; k < ChessBoard.CHESSBOARD_LENGTH; k++)
 			{
-				inbetweenSquare = new Location(i, pieceEndangeringKingLocation.getColumn());
-				//will make a method for this so it is not duplicated
-				for(int j = 0; j < cb.CHESSBOARD_LENGTH; j++)
+				for(int l = 0; l < ChessBoard.CHESSBOARD_WIDTH; l++)
 				{
-					for(int k = 0; k < cb.CHESSBOARD_WIDTH; k++)
+					//Check if the board square has a piece, and if so, if it's the opponent's colour
+					if(ChessBoard.board[k][l] != null && !player.equals(ChessBoard.board[k][l].getColour().getPrintColourAsString()))
 					{
-						if(cb.board[j][k] != null && cb.board[j][k].getColour().getPrintColourAsString() != player)
+						Location pieceToCheck = new Location(k, l);
+						if(moveShape.equals("vertical"))
 						{
-							Location pieceToCheck = new Location(j, k);
-							if(cb.board[j][k].validPieceMovement(pieceToCheck, inbetweenSquare, cb))
-							{
-								pieceCanIntervene = true;
-							}
+							inbetweenSquare = new Location(i, pieceEndangeringKingLocation.getColumn());
+						}
+						else if(moveShape.equals("horizontal"))
+						{
+							inbetweenSquare = new Location(pieceEndangeringKingLocation.getRow(), i);
+						}
+						else
+						{
+							inbetweenSquare = new Location(i, j);
+						}
+						
+						//the piece that has been found is now checked to see if it can move to cut off the check
+						if(ChessBoard.board[j][k].runMoveValidator(pieceToCheck, inbetweenSquare))
+						{
+							pieceCanIntervene = true;
 						}
 					}
 				}
 			}
+			j = j + pieceEndangeringKing.temp4;
 		}
-		
-		else if(pieceEndangeringKing.horizontalMovement(pieceEndangeringKingLocation, opponentsKingLocation))
-		{
-			for(int i = pieceEndangeringKing.temp1 + 1; i < pieceEndangeringKing.temp2; i++)
-			{
-				inbetweenSquare = new Location(pieceEndangeringKingLocation.getRow(), i);
-				//will make a method for this so it is not duplicated
-				for(int j = 0; j < cb.CHESSBOARD_LENGTH; j++)
-				{
-					for(int k = 0; k < cb.CHESSBOARD_WIDTH; k++)
-					{
-						if(cb.board[j][k] != null && !player.equals(cb.board[j][k].getColour().getPrintColourAsString()))
-						{
-							Location pieceToCheck = new Location(j, k);
-							if(cb.board[j][k].validPieceMovement(pieceToCheck, inbetweenSquare, cb))
-							{
-								pieceCanIntervene = true;
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		else if(pieceEndangeringKing.diagonalMovement(pieceEndangeringKingLocation, opponentsKingLocation))
-		{
-			for(int i = pieceEndangeringKing.temp1 + 1; i < pieceEndangeringKing.temp2; i++)
-			{
-				for(int j = pieceEndangeringKing.temp3 + 1; j < pieceEndangeringKing.temp4; j++) 
-				{
-					inbetweenSquare = new Location(i, j);
-					//will make a method for this so it is not duplicated
-					for(int k = 0; k < cb.CHESSBOARD_LENGTH; k++)
-					{
-						for(int l = 0; l < cb.CHESSBOARD_WIDTH; l++)
-						{
-							if(cb.board[k][l] != null && !player.equals(cb.board[k][l].getColour().getPrintColourAsString()))
-							{
-								Location pieceToCheck = new Location(k, l);
-								if(cb.board[k][l].validPieceMovement(pieceToCheck, inbetweenSquare, cb))
-								{
-									pieceCanIntervene = true;
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		
-		
 		return pieceCanIntervene;
 	}
-	
-	
-	
 	
 	
 	

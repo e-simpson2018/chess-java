@@ -5,11 +5,12 @@ import java.util.List;
 
 public class ChessBoard 
 {
-	public final int CHESSBOARD_WIDTH = 8;
-	public final int CHESSBOARD_LENGTH = 8;
-	Piece[][] board;
-	List<Piece> capturedWhite;
-	List<Piece> capturedBlack;
+	public static final int CHESSBOARD_WIDTH = 8;
+	public static final int CHESSBOARD_LENGTH = 8;
+	//Logical matrix holding pieces in their positions on the board
+	static Piece[][] board;
+	static List<Piece> capturedWhite;
+	static List<Piece> capturedBlack;
 		
 	
 	public ChessBoard(Piece queenW, Piece queenB, Piece kingW, Piece kingB, Piece rookW1, Piece rookW2, Piece rookB1, Piece rookB2, Piece bishopW1, Piece bishopW2, Piece bishopB1, Piece bishopB2, Piece knightW1, Piece knightW2, Piece knightB1,
@@ -73,6 +74,7 @@ public class ChessBoard
 		}
 	}
 	
+	//Get location of a piece on the board
 	public Location getLocation(Piece piece)
 	{
 		for(int i = 0; i < CHESSBOARD_WIDTH; i++)

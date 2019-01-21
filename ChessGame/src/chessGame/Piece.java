@@ -6,8 +6,7 @@ public abstract class Piece
 	{	
 		BLACK("black"), 
 		WHITE("white");
-		
-		
+			
 		//TODO CHECK IF I NEED ALL THIS STUFF IN ENUM
 		private String printString;
 		
@@ -22,46 +21,27 @@ public abstract class Piece
 		}
 	}
 	
+	private MoveValidator mv;
 	private Colour colour;
-	protected String pieceType;
-	protected int pieceId;
-	//added for the gui - in constructor too
-	protected Location setUpLocation;	
+	private int pieceId;
+	//TODO make private
 	public int temp1;
 	public int temp2;
 	public int temp3;
 	public int temp4;
 
-	//Getters and setters
-	
-	public Piece(Colour newColour)
+	//Constructor
+	public Piece(Colour colour, MoveValidator mv, int pieceId)
 	{
-		colour = newColour;
+		this.colour = colour;
+		this.mv = mv;	
+		this.pieceId = pieceId;
 	}
 	
+	//Getters
 	public Colour getColour()
 	{
 		return colour;
-	}
-	
-	public void setColour(Colour newColour)
-	{
-		colour = newColour;
-	}
-	
-	public Location getSetUpLocation()
-	{
-		return setUpLocation;
-	}
-	
-	public void setSetUpLocation(Location newSetUpLoc)
-	{
-		setUpLocation = newSetUpLoc;
-	}
-	
-	public String getPieceType()
-	{
-		return pieceType;
 	}
 	
 	public int getPieceId()
@@ -69,54 +49,107 @@ public abstract class Piece
 		return pieceId;
 	}
 	
-	//TODO REDO THESE METHODS
-	//TODO CHECK IF THERE IS A STRATEGY TO NOT PASS CHESSBOARD HERE BECAUSE PAWN IS THE ONLY ONE THAT NEEDS IT
-	//protected abstract boolean validPieceMovement(Location initialLocation, Location finalLocation);
-	
-	//ONLY PAWNS USE THE CB
-	protected abstract boolean validPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb);
-	
-	//TODO CHECK STRATEGY ON THESE METHODS
-	protected boolean verticalMovement(Location initialLocation, Location finalLocation)
+	public MoveValidator getMV()
 	{
-		boolean isVertical = false;
-		if((initialLocation.getRow() - finalLocation.getRow() != 0) && 
-				(initialLocation.getColumn() - finalLocation.getColumn() == 0))
-		{
-			isVertical = true;
-		}
-		
-		return isVertical;
-	}
-		
-	protected boolean horizontalMovement(Location initialLocation, Location finalLocation)
-	{
-		boolean isHorizontal = false;
-		if((initialLocation.getColumn() - finalLocation.getColumn() != 0) && 
-				(initialLocation.getRow() - finalLocation.getRow() == 0))
-		{
-			isHorizontal = true;
-		}
-		
-		return isHorizontal;
+		return mv;
 	}
 	
-	protected boolean diagonalMovement(Location initialLocation, Location finalLocation)
+	/**
+	 * Different pieces have a Validator with their specific moves
+	 * First check that the shape of the move is correct with validateMove()
+	 * Then check that there are no pieces in the way (no jumps allowed - apart from Knight)
+	 */
+	public boolean runMoveValidator(Location initialLocation, Location finalLocation)
 	{
-		boolean isDiagonal = false;
-
-		if(Math.abs(initialLocation.getColumn() - finalLocation.getColumn()) /
-				Math.abs(initialLocation.getRow() - finalLocation.getRow()) == 1)
+		boolean isValidMove = false; //flag
+		int id = this.getPieceId();
+		if(mv.validateMove(initialLocation, finalLocation))
 		{
-
-			isDiagonal = true;
+			//ids of pieces that need to have squares in between checked:
+			//bishop, rook, pawn(7Black and 8White, firstmove only) - queen is checked in its own overridden method
+			//TODO IMPLEMENT THE FIRSTMOVE PART
+			if(id == 1 || id == 2 || id == 7 || id == 8 || id == 11 || id == 12)
+			{
+				//Check if there are any pieces in the way
+				if(checkNothingInbetween(initialLocation, finalLocation))
+				{
+					isValidMove = true;
+				}
+			}
+			else
+			{
+				isValidMove = true;
+			}
 		}
-		return isDiagonal;
+		return isValidMove;
 	}
 	
-	public void setTempVars(Location initialLocation, Location finalLocation)
+	
+	/**
+	 * checkNothingInbetween() first sets temporary variables so that the opposite directions of the colours are accounted for 
+	 * It then checks the direction the piece is moving in, and loops through the in between squares looking for a non-null space
+	 */
+	public boolean checkNothingInbetween(Location initialLocation, Location finalLocation)
 	{
-		if(verticalMovement(initialLocation, finalLocation))
+		boolean nothingInbetween = true;
+		//Set temporary variables that account for different directions and return type of move
+		String moveType = setTempVars(initialLocation, finalLocation);
+		
+		//Loop through in-between squares
+		int j = temp3;
+		for(int i = temp1; i < temp2; i++)
+		{
+			if(moveType.equals("vertical"))
+			{
+				//checkWhatIsOnSquare returns false if there is a piece on a square that is not first or last square
+				if(!(checkWhatIsOnSquare(initialLocation, finalLocation, i, initialLocation.getColumn())))
+				{
+					return false;
+				}
+			}
+		
+			else if(moveType.equals("horizontal"))
+			{
+				if(!(checkWhatIsOnSquare(initialLocation, finalLocation, initialLocation.getRow(), i)))
+				{
+					return false;
+				}
+			}
+			else if(moveType.equals("diagonal"))
+			{
+				if(!(checkWhatIsOnSquare(initialLocation, finalLocation, i, j)))
+				{
+					return false;
+				}
+			}
+			j = j + temp4;
+		}
+		System.out.println("nothingInbetween: " + nothingInbetween);	
+		return nothingInbetween;
+	}
+	
+	/**
+	 * checkWhatIsOnSquare checks if a square (that cannot be the first or last in the move) has a piece on it
+	 * returns false if there is a piece that meets these requirements
+	 */
+	public boolean checkWhatIsOnSquare(Location initialLocation, Location finalLocation, int row, int col)
+	{
+		if(ChessBoard.board[row][col] != null && (row != initialLocation.getRow()) && (row != finalLocation.getRow()))
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	
+	/**
+	 * setTempVars juggles the variables and sets them so they can be used in other methods without
+	 *  worrying about direction of the piece
+	 *  it returns the shape of the move (vertical, horizontal, diagonal)
+	 */
+	public String setTempVars(Location initialLocation, Location finalLocation)
+	{
+		if(ChessUtil.verticalMovement(initialLocation, finalLocation))
 		{
 
 			if(initialLocation.getRow() < finalLocation.getRow())
@@ -129,9 +162,9 @@ public abstract class Piece
 				temp2 = initialLocation.getRow();
 				temp1 = finalLocation.getRow();
 			}
+			return "vertical";
 		}
-		
-		else if(horizontalMovement(initialLocation, finalLocation))
+		else if(ChessUtil.horizontalMovement(initialLocation, finalLocation))
 		{
 			if(initialLocation.getColumn() < finalLocation.getColumn())
 			{
@@ -143,9 +176,9 @@ public abstract class Piece
 				temp2 = initialLocation.getColumn();
 				temp1 = finalLocation.getColumn();
 			}
+			return "horizontal";
 		}
-		
-		else if(diagonalMovement(initialLocation, finalLocation))
+		else if(ChessUtil.diagonalMovement(initialLocation, finalLocation))
 		{
 			if(initialLocation.getRow() < finalLocation.getRow() && initialLocation.getColumn() < finalLocation.getColumn())
 			{
@@ -175,55 +208,9 @@ public abstract class Piece
 				temp3 = initialLocation.getColumn();
 				temp4 = -1;
 			}
+			return "diagonal";
 		}
-		System.out.println("temp vars set");
-	}
-	
-	public boolean checkNothingInbetween(Location initialLocation, Location finalLocation, ChessBoard cb)
-	{
-		boolean nothingInbetween = true;
-		
-		setTempVars(initialLocation, finalLocation);
-		
-		if(verticalMovement(initialLocation, finalLocation))
-		{
-			for(int i = temp1 + 1; i < temp2; i++)
-			{
-				if(cb.board[i][initialLocation.getColumn()] != null)
-				{
-					nothingInbetween = false;
-				}
-			}
-		}
-		
-		else if(horizontalMovement(initialLocation, finalLocation))
-		{
-			for(int i = temp1 + 1; i < temp2; i++)
-			{
-				if(cb.board[initialLocation.getRow()][i] != null)
-				{
-					nothingInbetween = false;
-				}
-			}
-		}
-		
-		else if(diagonalMovement(initialLocation, finalLocation))
-		{
-			int j = temp3;
-			
-			for(int i = temp1; i < temp2; i++)
-			{
-				System.out.println("checking inbtween square: " + cb.board[i][j]);
-				if((cb.board[i][j] != null) && (i != initialLocation.getRow() && j != initialLocation.getColumn()) && (i != finalLocation.getRow() && j != finalLocation.getColumn()))
-				{
-					
-					return false;
-				}
-				j = j + temp4;
-
-			}
-		}
-		System.out.println("nothingInbetween: " + nothingInbetween);	
-		return nothingInbetween;
+		//TODO SET CHECK FOR EMPTY STRING
+		return "";
 	}
 }

@@ -297,18 +297,14 @@ public class GameGUI implements ActionListener
 	{
 		if(isFirstClick)
 		{
-			System.out.println("inside first click. player: " + gm.player);
-			//System.out.println("row of pieceToMove: " + row);
-			//System.out.println("col of pieceToMove: " + col);
-			if(cb.board[row][col] == null)
+			System.out.println("inside first click. player: " + gm.getPlayer());
+			if(ChessBoard.board[row][col] == null)
 			{
 				System.out.println("Please choose a square with a piece");
 				return;
 			}
-			pieceToMove = cb.board[row][col];
-			System.out.println("fristclick pieceToMove: " + pieceToMove);
+			pieceToMove = ChessBoard.board[row][col];
 			initLocation = new Location(row, col);
-			System.out.println("fristclick initLocation: " + initLocation);
 
 			if(!gm.isPiecePlayersColour(pieceToMove))
 			{
@@ -317,26 +313,23 @@ public class GameGUI implements ActionListener
 				return;
 			}
 			
-			System.out.println("fristclick got past the if statement");
-
 			chessBoardSquares[row][col].setBackground(LIGHT_BLUE);
 			isFirstClick = false;
 		}
 		else
 		{
 			System.out.println("inside second click");
-
 			Location finalLocation = new Location(row, col);
 			
-			if(pieceToMove.validPieceMovement(initLocation, finalLocation, cb))
+			if(pieceToMove.runMoveValidator(initLocation, finalLocation))
 			{
-				System.out.println("MOVEMENT CONFIRMED. now to see if pieceOnDestination is null");
-				Piece pieceOnDestination = cb.board[row][col];
+				Piece pieceOnDestination = ChessBoard.board[row][col];
 
 				//check square to move to is empty
 				if(pieceOnDestination == null)
 				{
-					gm.movePiece(initLocation, finalLocation, cb, pieceToMove);
+					System.out.println("piece moved because piece on destination is null");
+					gm.movePiece(initLocation, finalLocation, pieceToMove, cb);
 				}
 				else 
 				{
@@ -347,8 +340,9 @@ public class GameGUI implements ActionListener
 					}
 					else
 					{
-						gm.capturePiece(pieceOnDestination, cb);
-						gm.movePiece(initLocation, finalLocation, cb, pieceToMove);
+						System.out.println("piece moved because piece on destination is opponent's colour");
+						gm.capturePiece(pieceOnDestination);
+						gm.movePiece(initLocation, finalLocation, pieceToMove, cb);
 						//TODO decide what to do if comes back as check
 					}
 				}

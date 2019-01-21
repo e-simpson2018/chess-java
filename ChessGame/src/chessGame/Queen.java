@@ -2,32 +2,37 @@ package chessGame;
 
 public class Queen extends Piece
 {
+	//2nd MoveValidator
+	private MoveValidator mv2;
 	
+	//Constructor
 	public Queen(Colour newColour) 
 	{
-		super(newColour);
-		super.pieceType = "queen";
-		
-		if (newColour ==  Piece.Colour.WHITE)		
-			super.pieceId = 10;		
-		else		
-			super.pieceId = 9;
+		super(newColour, new DynamicDiagonalValidator(), init(newColour));
+		this.mv2 = new DynamicStraightValidator();
 	}
 	
-	@Override
-	protected boolean validPieceMovement(Location initialLocation, Location finalLocation, ChessBoard cb) 
+	//Set pieceId to pass to super constructor
+	public static int init(Colour newColour)
 	{
-		System.out.println("inside queen piecemovement");
-
+		if (newColour ==  Piece.Colour.WHITE)		
+			return 10;		
+		else		
+			return 9;
+	}
+	
+	/**
+	 * runMoveValidator uses 2 MoveValidators (only piece to do so) to check for both diagonal and horizontal/vertical movements
+	 * It also checks nothing is in between 
+	 */
+	@Override
+	public boolean runMoveValidator(Location initialLocation, Location finalLocation)
+	{
 		boolean isValidMove = false;
-		
-		if(verticalMovement(initialLocation, finalLocation) ||
-			horizontalMovement(initialLocation, finalLocation) ||
-			diagonalMovement(initialLocation, finalLocation))
+		//TODO check syntax this.getMV()??????
+		if(this.getMV().validateMove(initialLocation, finalLocation) || mv2.validateMove(initialLocation, finalLocation))
 		{
-			System.out.println("inside allthemoves");
-
-			if(checkNothingInbetween(initialLocation, finalLocation, cb))
+			if(checkNothingInbetween(initialLocation, finalLocation))
 			{
 				isValidMove = true;
 			}
@@ -35,8 +40,7 @@ public class Queen extends Piece
 		return isValidMove;
 	}
 	
-	
-	
+	@Override
 	public String toString() 
 	{ 
 		//TODO UPDATE
